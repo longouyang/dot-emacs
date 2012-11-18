@@ -5,6 +5,9 @@
 
 ;; use solarized theme
 (add-to-list 'custom-theme-load-path "~/dot-emacs/vendor/solarized")
+;; NB: need to have iterm2 set to report TERM=xterm-16color
+;; for solarized colors to look right in terminal
+;; (https://github.com/sellout/emacs-color-theme-solarized/issues/71)
 (load-theme 'solarized-light t)
 
 ;; switch font to inconsolata
