@@ -24,13 +24,7 @@
 ;; church (loads quack)
 (require 'church)
 
-;; magit, from: https://github.com/magit/magit
-;; NOTES:
-;; to install locally on OS X, i downloaded the source
-;; and changed the Makefile to read PREFIX=/opt/local
-;; rather than /usr/local, since emacs-app uses the former.
-;; also, for some weird reason, git was installed to my ~/bin,
-;; so i had to add ~/bin to my PATH and exec-path inside .emacs
+(add-to-list 'load-path "~/dot-emacs/vendor/magit")
 (require 'magit)
 
 ;;; append-tuareg.el - Tuareg quick installation: Append this file to .emacs.
