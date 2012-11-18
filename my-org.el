@@ -103,8 +103,6 @@ end tell" url)))
 	("" "longtable" nil)
 	("" "float" nil)))
 
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
 
 (add-hook 'LaTeX-mode-hook
           (lambda ()
