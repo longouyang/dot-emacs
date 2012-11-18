@@ -1,0 +1,5 @@
+org-mode is installed from macports
+ESS is installed from website
+
+solarized theme is installed from https://github.com/sellout/emacs-color-theme-solarized
+- i added a few lines of my own customization to solarized-definitions.el to make org-mode eaasier to read
