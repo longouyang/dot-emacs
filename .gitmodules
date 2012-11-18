@@ -10,3 +10,6 @@
 [submodule "vendor/solarized"]
 	path = vendor/solarized
 	url = git@github.com:longouyang/emacs-color-theme-solarized.git
+[submodule "vendor/magit"]
+	path = vendor/magit
+	url = https://github.com/magit/magit.git
