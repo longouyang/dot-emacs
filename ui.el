@@ -4,7 +4,7 @@
 (setq inhibit-splash-screen t)
 
 ;; use solarized theme
-(add-to-list 'custom-theme-load-path "~/dot-emacs/solarized")
+(add-to-list 'custom-theme-load-path "~/dot-emacs/vendor/solarized")
 (load-theme 'solarized-light t)
 
 ;; switch font to inconsolata

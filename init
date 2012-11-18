@@ -7,8 +7,8 @@
 ;;                 (getenv "IKARUS_LIBRARY_PATH")))
 
 (add-to-list 'load-path "~/dot-emacs")
-(add-to-list 'load-path "~/dot-emacs/ess-12.04-4/lisp")
-;;(add-to-list 'load-path "~/dotfiles/emacs/org-mode/lisp")
+(add-to-list 'load-path "~/dot-emacs/vendor/ess/lisp")
+;;(add-to-list 'load-path "~/dot-emacs/vendor/org-mode/lisp")
 
 (load "~/dot-emacs/ui.el")
 (load "~/dot-emacs/emacs-backend.el")
@@ -16,7 +16,7 @@
 (load "~/dot-emacs/ess.el")
 
 ;; haskell-mode (http://www.haskell.org/haskellwiki/Haskell_mode_for_Emacs)
-(load "~/dot-emacs/haskell-mode/haskell-site-file")
+(load "~/dot-emacs/vendor/haskell-mode/haskell-site-file")
 
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
