@@ -296,6 +296,14 @@ end tell" url)))
 (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
 (add-hook 'R-mode-hook                (lambda () (paredit-mode +1)))
 
+(defun paredit-space-for-delimiter-p (endp delimiter)
+  (and (not (if endp (eobp) (bobp)))
+       (memq major-mode '(R-mode c-mode))
+       (memq (char-syntax (if endp (char-after) (char-before)))
+             (list ?\"  ;; REMOVED ?w ?_
+                   (let ((matching (matching-paren delimiter)))
+                     (and matching (char-syntax matching)))))))
+
 (defun rename-file-and-buffer (new-name)
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
