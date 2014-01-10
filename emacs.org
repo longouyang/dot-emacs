@@ -13,6 +13,24 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 (add-to-list 'load-path "~/dot-emacs/")
 #+END_SRC
 
+* exec-path-from-shell
+
+copies important environment variables from my shell into emacs exec-path
+  
+https://github.com/purcell/exec-path-from-shell
+  
+2013/09/30, downloaded raw file from github and added here 
+  
+    #+begin_src emacs-lisp
+(load "exec-path-from-shell.el")
+(exec-path-from-shell-initialize)
+  #+end_src
+
+* Environment variables
+  #+begin_src emacs-lisp
+  (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+  #+end_src
+
 * Backups
 
 #+BEGIN_SRC emacs-lisp
@@ -42,7 +60,6 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 #+END_SRC
 
 * Appearance
-
 ** Disable splash screen, scroll bar, toolbar
 
 Disabling scroll bars w/o custom-set-variable: http://emacswiki.org/emacs/ScrollBar
@@ -77,55 +94,11 @@ FIXME
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+END_SRC
 
-* Keyboard
-** Copy/paste
-#+BEGIN_SRC emacs-lisp
-;; emacs 23.1 and later joins the system clipboard with the
-;; emacs killring. get rid of this.
-;; taken from: http://emacswiki.org/emacs/CopyAndPaste#toc10
-;; (setq interprogram-cut-function 'x-select-text)
-;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
-(setq interprogram-cut-function nil)
-(setq interprogram-paste-function nil)
-(defun paste-from-pasteboard ()
-  (interactive)
-  (and mark-active (filter-buffer-substring (region-beginning) (region-end) t))
-  (insert (ns-get-pasteboard))
-  )
-(defun copy-to-pasteboard (p1 p2)
-  (interactive "r*")
-  (ns-set-pasteboard (buffer-substring p1 p2))
-  (message "Copied selection to pasteboard")
-  )
-(defun cut-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (filter-buffer-substring p1 p2 t)) )
-(global-set-key (kbd "s-v") 'paste-from-pasteboard)
-(global-set-key (kbd "s-c") 'copy-to-pasteboard)
-(global-set-key (kbd "s-x") 'cut-to-pasteboard)
-#+END_SRC
-
-** Comments
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c C-=") 'comment-region)
-(global-set-key (kbd "C-c C--") 'uncomment-region)
-#+END_SRC
-
-** Previous window
-
-#+BEGIN_SRC emacs-lisp
-(defun prev-window ()
-  (interactive)
-  (other-window -1))
-
-(global-set-key (kbd "C-x p") 'prev-window)
-#+END_SRC
-
-
-** Go to indent
-Remap from default M-m to M-i
-HT http://emacsrocks.com/e04.html (around 1:15 in video)
+* Expand-region
 #+begin_src emacs-lisp
-(define-key global-map (kbd "M-i") 'back-to-indentation)
-#+end_src 
+(require 'expand-region)
+(global-set-key (kbd "C-.") 'er/expand-region)
+#+end_src
 * Yasnippets
 #+begin_src emacs-lisp
 (require 'yasnippet)
@@ -142,6 +115,13 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 * Major modes
 ** Org
+*** src indentation 
+HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
+
+#+begin_src emacs-lisp
+(setq org-src-preserve-indentation t)
+#+end_src
+
 *** Load languages
 
 #+BEGIN_SRC emacs-lisp
@@ -347,6 +327,7 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (setq quack-programs (quote ("o" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi" "ikarus" "ssh -t alonzo@nospoon.mit.edu ikarus")))
 #+END_SRC
 
+o   
 ** Haskell
 #+begin_src emacs-lisp
 (load "haskell-site-file")
@@ -365,6 +346,168 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 #+begin_src emacs-lisp
 (setq LaTeX-command "latex -synctex=1")
 #+end_src
+
+Helper function for git-friendly formatting
+bind to M-n
+#+begin_src emacs-lisp
+  (defun tex-git-friendly ()
+    (interactive)
+    (replace-string ". " ".\n " nil (region-beginning) (region-end))
+  )
+  
+  (defun LaTeX-mode-keys ()
+    "Modify keymaps used by `html-mode'."
+    (local-set-key (kbd "M-n") 'tex-git-friendly)
+    )
+  
+  (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
+#+end_src
+
+** js2
+2013/03/19: installed and compiled according to https://code.google.com/p/js2-mode/wiki/InstallationInstructions
+
+But note that I change the filename from js2 to js2-mode, so I had to change the second argument of the autoload line below
+
+2013/03/21: apparently Steve Yegge's google code repository is no longer under active development, so I reinstalled from the mooz github repository (https://github.com/mooz/js2-mode)
+
+
+#+begin_src emacs-lisp
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+#+end_src
+*** Declaring globals
+
+js2-mode underlines undefined variables, which might actually be defined because, say, they're included in a different script. On the emacswiki page, Tim Meadowcroft has a fix for this
+
+http://emacswiki.org/emacs/Js2Mode
+
+#+begin_src emacs-lisp
+;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
+;; add any symbols to a buffer-local var of acceptable global vars
+;; Note that we also support the "symbol: true" way of specifying names via a hack (remove any ":true"
+;; to make it look like a plain decl, and any ':false' are left behind so they'll effectively be ignored as
+;; you can;t have a symbol called "someName:false"
+(add-hook 'js2-post-parse-callbacks
+	  (lambda ()
+	    (when (> (buffer-size) 0)
+	      (let ((btext (replace-regexp-in-string
+			    ": *true" " "
+			    (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
+		(mapc (apply-partially 'add-to-list 'js2-additional-externs)
+		      (split-string
+		       (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
+		       " *, *" t))
+		))))
+#+end_src
+
+*** Allow missing semi colons in one line functions
+#+begin_src emacs-lisp
+(setq js2-missing-semi-one-line-override t)
+#+end_src
+
+*** Soft tabs
+
+Do soft tabs in javascript and use only 4 spaces rather than 8
+
+HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-hook parts
+
+#+begin_src emacs-lisp
+(setq js2-mode-hook
+  '(lambda () (progn
+    (setq indent-tabs-mode nil)
+    (setq js2-basic-offset 2))))
+#+end_src
+
+TODO: figre out how to globally set js2-basic-offset to 2, rather than patching it in with the mode hook
+
+** Python
+#+begin_src emacs-lisp
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 2)
+#+end_src
+
+#+RESULTS:
+: 2
+
+
+   #+begin_src emacs-lisp
+   (add-hook 'python-mode-hook
+          (function (lambda ()
+                      (setq indent-tabs-mode nil
+                            tab-width 2))))
+   #+end_src
+
+   #+RESULTS:
+   | er/add-python-mode-expansions | make-enter-indent | (lambda nil (setq indent-tabs-mode nil tab-width 2)) |
+
+** Markdown
+   #+begin_src emacs-lisp
+     (autoload 'markdown-mode "markdown-mode"
+       "Major mode for editing Markdown files" t)
+     (add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+     (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+     (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+   #+end_src
+
+
+   I'm apparently using the markdown parser from Ruby's gems, which doesn't play nice with markdown previews / exports. 
+   #+begin_src emacs-lisp
+(custom-set-variables '(markdown-command "~/Library/Haskell/bin/pandoc"))
+   #+end_src
+
+   Use a css file in ~/dot-emacs/markdown.css (FIXME: doesn't work currently)
+   #+begin_src emacs-lisp
+(custom-set-variables '(markdown-css-path "//localhost/Users/longouyang/dot-emacs/markdown.css"))
+   #+end_src
+
+   #+RESULTS:
+
+   
+** shell
+
+   good directory tracking (so autocomplete works even after I use z to jump around)
+   HT http://www.emacswiki.org/emacs/ShellDirtrackByProcfs
+   but it doesn't quite work
+
+   the messages buffer complains about:
+   #+BEGIN_EXAMPLE
+error in process filter: locate-file: Wrong type argument: stringp, nil
+error in process filter: Wrong type argument: stringp, nil
+   #+END_EXAMPLE
+
+   #+begin_src emacs-lisp
+     ;; (defun track-shell-directory/procfs ()
+     ;;   (shell-dirtrack-mode 0)
+     ;;   (add-hook 'comint-preoutput-filter-functions
+     ;;             (lambda (str)
+     ;;               (prog1 str
+     ;;                 (when (string-match comint-prompt-regexp str)
+     ;;                   (cd (file-symlink-p
+     ;;                        (format "/proc/%s/cwd" (process-id
+     ;;                                                (get-buffer-process
+     ;;                                                 (current-buffer)))))))))
+     ;;             nil t))
+     
+     ;; (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
+     
+   #+end_src
+   
+** dired
+
+   Cut details from dired listing
+   HT http://www.emacswiki.org/emacs/DiredDetails
+   #+begin_src emacs-lisp 
+(require 'dired-details)
+(dired-details-install)
+(set-variable 'dired-details-hidden-string "- ")
+   #+end_src
+
+   List directories first
+   HT http://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
+   #+begin_src emacs-lisp
+   (setq dired-listing-switches "-alXGh --group-directories-first")
+   #+end_src
+   
 * Minor modes
 ** Ace jump mode
 #+BEGIN_SRC emacs-lisp
@@ -373,13 +516,15 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
   "ace-jump-mode"
   "Emacs quick move minor mode"
   t)
-(define-key global-map (kbd "M-m") 'ace-jump-mode)
 
 (autoload
   'ace-jump-mode-pop-mark
   "ace-jump-mode"
   "Ace jump back:-)"
   t)
+
+(setq ace-jump-mode-scope 'frame)
+
 (eval-after-load "ace-jump-mode"
   '(ace-jump-mode-enable-mark-sync))
 (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
@@ -390,6 +535,11 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (require 'magit)
 #+END_SRC
 
+Bind M-g to magit-status
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-g") 'magit-status)
+#+end_src
+
 ** Paredit
 #+begin_src emacs-lisp
   (autoload 'paredit-mode "paredit"
@@ -398,22 +548,17 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
   (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
   (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
   (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
-  (add-hook 'R-mode-hook                (lambda () (paredit-mode +1)))
 #+end_src
 
-Disable space before opening bracket in languages like R and C:
+#+RESULTS:
+
+Use electric-pair-mode for non-lisps:
 #+begin_src emacs-lisp
   ;; HT http://stackoverflow.com/a/913823/351392
+  ;; HT http://stackoverflow.com/questions/5298907/emacs-php-mode-and-paredit#comment12995031_5324458
   
-  (defun paredit-space-for-delimiter-p (endp delimiter)
-    (and (not (if endp (eobp) (bobp)))
-         (memq major-mode '(R-mode c-mode))
-         (memq (char-syntax (if endp (char-after) (char-before)))
-               (list ?\"  ;; REMOVED ?w ?_
-                     (let ((matching (matching-paren delimiter)))
-                       (and matching (char-syntax matching)))))))
+  (electric-pair-mode)
 #+end_src
-
 
 * Misc
 
@@ -434,4 +579,188 @@ Disable space before opening bracket in languages like R and C:
           (set-visited-file-name new-name)
           (set-buffer-modified-p nil))))))
 #+END_SRC
+
+* Keyboard
+** Enter indents
+
+HT http://emacswiki.org/emacs/AutoIndentation
+#+begin_src emacs-lisp
+(defun make-enter-indent ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(add-hook 'js2-mode-hook 'make-enter-indent)
+(add-hook 'python-mode-hook 'make-enter-indent)
+(add-hook 'html-mode-hook 'make-enter-indent)
+(add-hook 'org-mode-hook 'make-enter-indent)
+#+end_src
+
+
+** Copy/paste
+#+BEGIN_SRC emacs-lisp
+;; emacs 23.1 and later joins the system clipboard with the
+;; emacs killring. get rid of this.
+;; taken from: http://emacswiki.org/emacs/CopyAndPaste#toc10
+;; (setq interprogram-cut-function 'x-select-text)
+;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
+(setq interprogram-cut-function nil)
+(setq interprogram-paste-function nil)
+(defun paste-from-pasteboard ()
+  (interactive)
+  (and mark-active (filter-buffer-substring (region-beginning) (region-end) t))
+  (insert (ns-get-pasteboard))
+  )
+(defun copy-to-pasteboard (p1 p2)
+  (interactive "r*")
+  (ns-set-pasteboard (buffer-substring p1 p2))
+  (message "Copied selection to pasteboard")
+  )
+(defun cut-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (filter-buffer-substring p1 p2 t)) )
+(global-set-key (kbd "s-v") 'paste-from-pasteboard)
+(global-set-key (kbd "s-c") 'copy-to-pasteboard)
+(global-set-key (kbd "s-x") 'cut-to-pasteboard)
+#+END_SRC
+
+** Autoindent yanked code
+Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/AutoIndentation
+#+begin_src emacs-lisp
+(dolist (command '(yank yank-pop))
+  (eval `(defadvice ,command (after indent-region activate)
+	   (and (not current-prefix-arg)
+		(member major-mode '(emacs-lisp-mode lisp-mode
+						     clojure-mode    scheme-mode
+						     haskell-mode    ruby-mode
+						     rspec-mode      python-mode
+						     c-mode          c++-mode
+						     objc-mode       latex-mode
+						     plain-tex-mode  js2-mode
+						     html-mode))
+		(let ((mark-even-if-inactive transient-mark-mode))
+		  (indent-region (region-beginning) (region-end) nil))))))
+#+end_src
+
+#+RESULTS:
+
+** Comments
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c C-=") 'comment-region)
+(global-set-key (kbd "C-c C--") 'uncomment-region)
+#+END_SRC
+
+** Next/previous window
+
+#+BEGIN_SRC emacs-lisp
+(defun prev-window ()
+  (interactive)
+  (other-window -1))
+
+(defun longs-next-window ()
+  (interactive)
+  (other-window 1))
+
+(global-set-key (kbd "C-x p") 'prev-window)
+(global-set-key (kbd "s-}") 'longs-next-window)
+(global-set-key (kbd "s-{") 'prev-window)
+#+END_SRC
+
+** windmove ("geographic"  window switching)
+
+   HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
+   
+#+begin_src emacs-lisp
+(global-set-key (kbd "<s-left>") 'windmove-left) 
+(global-set-key (kbd "<s-right>") 'windmove-right) 
+(global-set-key (kbd "<s-up>") 'windmove-up) 
+(global-set-key (kbd "<s-down>") 'windmove-down)
+#+end_src
+
+** delete-window
+
+   s-0 as a shorter version of C-x 0
+
+   #+begin_src emacs-lisp
+   (global-set-key (kbd "s-0") 'delete-window)
+   #+end_src
+
+** Go to indent
+Remap from default M-m to M-i
+HT http://emacsrocks.com/e04.html (around 1:15 in video)
+#+begin_src emacs-lisp
+(define-key global-map (kbd "M-i") 'back-to-indentation)
+#+end_src 
+** Key chords
+#+begin_src emacs-lisp
+(require 'key-chord)
+(key-chord-mode 1)
+(key-chord-define-global "jk" 'ace-jump-mode)
+#+end_src
+
+** M-m replace-string
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-m") 'replace-string)
+#+end_src
+
+
+   
+* todo setup
+
+  #+begin_src emacs-lisp
+    (defun tdo ()
+      (interactive)
+    
+    ;; HT http://www.gnu.org/software/emacs/manual/html_node/emacs/Select-Buffer.html
+      (switch-to-buffer-other-frame "todo"))
+    
+  #+end_src
+
+
+* lazy writing (capitalize heads of sentences)
+
+  epic fail
+  #+begin_comment
+    (defun replace-regexp (regexp to-string &optional delimited start end)
+    ;;  (message to-string)
+      (interactive
+       (let ((common
+              (query-replace-read-args
+               (concat "Replace"
+                       (if current-prefix-arg " word" "")
+                       " regexp"
+                       (if (and transient-mark-mode mark-active) " in region" ""))
+               t)))
+         (list (nth 0 common) (nth 1 common) (nth 2 common)
+               (if (and transient-mark-mode mark-active)
+                   (region-beginning))
+               (if (and transient-mark-mode mark-active)
+                   (region-end)))))
+      (perform-replace regexp to-string nil t delimited nil nil start end))
+    
+    (defun capitalize-head ()
+      (interactive)
+       (replace-regexp "\\(^\\|\\. \\)\\([a-z]\\)"
+                      (replace-eval-replacement concat "\\1" (replace-quote (upcase (match-string 2))))))
+    
+    a b c. d e f. g h i.
+    
+    
+  #+end_comment
+
+  
+
+* custom face setting
+  #+begin_src emacs-lisp
+  (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-block ((t (:inherit shadow :background "selectedMenuItemTextColor" :foreground "Black")))))
+  #+end_src
+
+* git
+
+  use --word-diff in magit-diff-options (TODO: colors don't actually show up)
+  #+begin_src emacs-lisp
+  ;; (setq magit-diff-options (list "--color" "--word-diff=color"))
+  (setq magit-diff-options nil)
+  #+end_src
 
