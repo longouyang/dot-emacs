@@ -16,3 +16,6 @@
 [submodule "vendor/js2-mode"]
 	path = vendor/js2-mode
 	url = git://github.com/mooz/js2-mode.git
+[submodule "vendor/expand-region"]
+	path = vendor/expand-region
+	url = git://github.com/magnars/expand-region.el
