@@ -45,7 +45,7 @@
 (global-set-key (kbd "C-.") 'er/expand-region)
 
 (require 'yasnippet)
-(setq yas/root-directory "~/dot-emacs/vendor/yasnippet/snippets")
+(add-to-list 'yas-snippet-dirs "~/dot-emacs/snippets/ess-mode")
 (yas-global-mode 1)
 
 (require 'ess-site)
