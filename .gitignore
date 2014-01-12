@@ -1,1 +1,4 @@
 .DS_Store
+init.el
+elpa/*
+auto-save-list/*
