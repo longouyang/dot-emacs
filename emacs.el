@@ -8,8 +8,14 @@
 
   (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
 
-(defun make-backup-file-name (file)
-  (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
+  (setq default-directory (concat (getenv "HOME") "/"))
+
+;; this no longer worked on my 24.3 install on mavericks
+; (defun make-backup-file-name (file)
+;   (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
+
+;; HT http://stackoverflow.com/a/151946
+(setq backup-directory-alist '(("." . "~/.emacs_backups")))
 
 (defadvice isearch-repeat (after isearch-no-fail activate)
   (unless isearch-success
@@ -27,16 +33,23 @@
     (ad-enable-advice 'isearch-search 'after 'isearch-no-fail)
     (ad-activate 'isearch-search)))
 
-(setq inhibit-splash-screen t)
-(set-scroll-bar-mode nil)
-(tool-bar-mode 0)
+(when (display-graphic-p)
+  (setq inhibit-splash-screen t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (fringe-mode '(4 . 4))
+)
 
 (add-to-list 'custom-theme-load-path "~/dot-emacs/vendor/solarized")
 (load-theme 'solarized-light t)
 
+(defadvice load-theme 
+  (before theme-dont-propagate activate)
+  (mapcar #'disable-theme custom-enabled-themes))
+
 (when (member "Inconsolata" (font-family-list))
 	    (set-default-font "Inconsolata")
-	    (set-face-attribute 'default nil :font "Inconsolata" :height 130 ))
+	    (set-face-attribute 'default nil :font "Inconsolata" :height 140))
 
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
@@ -52,6 +65,18 @@
 (ess-toggle-underscore nil)
 
 (load "htmlize.el")
+
+(add-hook 'ess-mode-hook (lambda ()
+                           (local-set-key (kbd "s-r") 'ess-eval-buffer-and-go)))
+
+(add-hook 'inferior-ess-mode-hook (lambda ()
+                                    (progn
+                                      (set-variable 'comint-scroll-to-bottom-on-output 'this)
+                                      (set-variable 'comint-scroll-show-maximum-output t)
+                                      (set-variable 'comint-scroll-to-bottom-on-input 'this))))
+
+(add-hook 'org-mode-hook (lambda ()
+                           (visual-line-mode 1)))
 
 (setq org-src-preserve-indentation t)
 
@@ -259,6 +284,9 @@ end tell" url)))
   
   (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
 
+(add-hook 'LaTeX-mode-hook (lambda ()
+                           (visual-line-mode 1)))
+
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
@@ -279,20 +307,23 @@ end tell" url)))
 		       " *, *" t))
 		))))
 
-(setq js2-missing-semi-one-line-override t)
+;(setq js2-missing-semi-one-line-override t)
+(setq js2-strict-missing-semi-warning nil)
 
 (setq js2-mode-hook
   '(lambda () (progn
     (setq indent-tabs-mode nil)
-    (setq js2-basic-offset 2))))
+    (setq js2-basic-offset 4))))
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
 
-   (add-hook 'python-mode-hook
+(add-hook 'python-mode-hook
           (function (lambda ()
                       (setq indent-tabs-mode nil
-                            tab-width 2))))
+                            tab-width 2
+                            python-indent-offset 2 ;; HT http://www.emacswiki.org/emacs/IndentingPython
+                            ))))
 
      (autoload 'markdown-mode "markdown-mode"
        "Major mode for editing Markdown files" t)
@@ -319,11 +350,15 @@ end tell" url)))
      ;; (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
      
 
+   (require 'shell-current-directory)
+
 (require 'dired-details)
 (dired-details-install)
 (set-variable 'dired-details-hidden-string "- ")
 
    (setq dired-listing-switches "-alXGh --group-directories-first")
+
+(require 'julia-mode)
 
 (autoload
   'ace-jump-mode
@@ -448,6 +483,8 @@ end tell" url)))
 
 (global-set-key (kbd "M-m") 'replace-string)
 
+(global-set-key (kbd "M-M") 'replace-regexp)
+
     (defun tdo ()
       (interactive)
     
@@ -455,12 +492,18 @@ end tell" url)))
       (switch-to-buffer-other-frame "todo"))
     
 
-  (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-block ((t (:inherit shadow :background "selectedMenuItemTextColor" :foreground "Black")))))
+ ;;  (custom-set-faces
+ ;; ;; custom-set-faces was added by Custom.
+ ;; ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; ;; Your init file should contain only one such instance.
+ ;; ;; If there is more than one, they won't work right.
+ ;;  '(org-block ((t (:inherit shadow :background "DarkSlateGray" :foreground "Black")))))
 
   ;; (setq magit-diff-options (list "--color" "--word-diff=color"))
   (setq magit-diff-options nil)
+
+(require 'package)
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)

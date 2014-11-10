@@ -31,11 +31,20 @@ https://github.com/purcell/exec-path-from-shell
   (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
   #+end_src
 
+  Make C-x f use HOME as the default directory
+  #+BEGIN_SRC emacs-lisp
+  (setq default-directory (concat (getenv "HOME") "/"))
+  #+END_SRC
+  
 * Backups
 
 #+BEGIN_SRC emacs-lisp
-(defun make-backup-file-name (file)
-  (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
+;; this no longer worked on my 24.3 install on mavericks
+; (defun make-backup-file-name (file)
+;   (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
+
+;; HT http://stackoverflow.com/a/151946
+(setq backup-directory-alist '(("." . "~/.emacs_backups")))
 #+END_SRC
 
 * Search
@@ -60,14 +69,17 @@ https://github.com/purcell/exec-path-from-shell
 #+END_SRC
 
 * Appearance
-** Disable splash screen, scroll bar, toolbar
+** Disable splash screen, scroll bar, toolbar, reduce fringe
 
 Disabling scroll bars w/o custom-set-variable: http://emacswiki.org/emacs/ScrollBar
 
 #+BEGIN_SRC emacs-lisp
-(setq inhibit-splash-screen t)
-(set-scroll-bar-mode nil)
-(tool-bar-mode 0)
+(when (display-graphic-p)
+  (setq inhibit-splash-screen t)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (fringe-mode '(4 . 4))
+)
 #+END_SRC
 
 ** Solarized
@@ -80,11 +92,19 @@ for solarized colors to look right in terminal
 (load-theme 'solarized-light t)
 #+END_SRC
 
+disable theme before switching using =load-theme=
+http://stackoverflow.com/a/15595000/351392
+#+BEGIN_SRC emacs-lisp
+(defadvice load-theme 
+  (before theme-dont-propagate activate)
+  (mapcar #'disable-theme custom-enabled-themes))
+#+END_SRC
+
 ** Use Inconsolata font
 #+BEGIN_SRC emacs-lisp
 (when (member "Inconsolata" (font-family-list))
 	    (set-default-font "Inconsolata")
-	    (set-face-attribute 'default nil :font "Inconsolata" :height 130 ))
+	    (set-face-attribute 'default nil :font "Inconsolata" :height 140))
 #+END_SRC
 
 ** Colors in shell mode
@@ -113,8 +133,46 @@ FIXME
 (load "htmlize.el")
 #+END_SRC
 
+
+  keyboard shortcut for eval-buffer-and-go
+  #+BEGIN_SRC emacs-lisp
+(add-hook 'ess-mode-hook (lambda ()
+                           (local-set-key (kbd "s-r") 'ess-eval-buffer-and-go)))
+  #+END_SRC
+
+  #+RESULTS:
+  | lambda | nil | (local-set-key (kbd s-r) (quote ess-eval-buffer-and-go)) |
+
+  inferior-ess-mode-hook
+  #+BEGIN_SRC emacs-lisp
+(add-hook 'inferior-ess-mode-hook (lambda ()
+                                    (progn
+                                      (set-variable 'comint-scroll-to-bottom-on-output 'this)
+                                      (set-variable 'comint-scroll-show-maximum-output t)
+                                      (set-variable 'comint-scroll-to-bottom-on-input 'this))))
+
+  #+END_SRC
+
+  #+RESULTS:
+  | lambda | nil | (progn (set-variable (quote comint-scroll-to-bottom-on-output) (quote this)) (set-variable (quote comint-scroll-show-maximum-output) t) (set-variable (quote comint-scroll-to-bottom-on-input) (quote this))) |
+
+
+
+  
 * Major modes
 ** Org
+*** visual line mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook (lambda ()
+                           (visual-line-mode 1)))
+#+END_SRC
+    
+*** example blocks background
+
+    #+begin_example
+    
+    #+end_example
+    
 *** src indentation 
 HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
 
@@ -320,6 +378,7 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'org-display-inline-images)
 #+end_src 
+*** ESS: 
 ** Church
 #+BEGIN_SRC emacs-lisp
 (require 'church)
@@ -327,7 +386,7 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (setq quack-programs (quote ("o" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi" "ikarus" "ssh -t alonzo@nospoon.mit.edu ikarus")))
 #+END_SRC
 
-o   
+   
 ** Haskell
 #+begin_src emacs-lisp
 (load "haskell-site-file")
@@ -363,8 +422,14 @@ bind to M-n
   (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
 #+end_src
 
-** js2
-2013/03/19: installed and compiled according to https://code.google.com/p/js2-mode/wiki/InstallationInstructions
+visual line mode
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook (lambda ()
+                           (visual-line-mode 1)))
+#+END_SRC
+
+** js22
+013/03/19: installed and compiled according to https://code.google.com/p/js2-mode/wiki/InstallationInstructions
 
 But note that I change the filename from js2 to js2-mode, so I had to change the second argument of the autoload line below
 
@@ -400,9 +465,10 @@ http://emacswiki.org/emacs/Js2Mode
 		))))
 #+end_src
 
-*** Allow missing semi colons in one line functions
+*** Allow missing semi colons
 #+begin_src emacs-lisp
-(setq js2-missing-semi-one-line-override t)
+;(setq js2-missing-semi-one-line-override t)
+(setq js2-strict-missing-semi-warning nil)
 #+end_src
 
 *** Soft tabs
@@ -415,7 +481,7 @@ HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-h
 (setq js2-mode-hook
   '(lambda () (progn
     (setq indent-tabs-mode nil)
-    (setq js2-basic-offset 2))))
+    (setq js2-basic-offset 4))))
 #+end_src
 
 TODO: figre out how to globally set js2-basic-offset to 2, rather than patching it in with the mode hook
@@ -431,15 +497,19 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
 
 
    #+begin_src emacs-lisp
-   (add-hook 'python-mode-hook
+(add-hook 'python-mode-hook
           (function (lambda ()
                       (setq indent-tabs-mode nil
-                            tab-width 2))))
+                            tab-width 2
+                            python-indent-offset 2 ;; HT http://www.emacswiki.org/emacs/IndentingPython
+                            ))))
    #+end_src
 
    #+RESULTS:
    | er/add-python-mode-expansions | make-enter-indent | (lambda nil (setq indent-tabs-mode nil tab-width 2)) |
 
+
+   
 ** Markdown
    #+begin_src emacs-lisp
      (autoload 'markdown-mode "markdown-mode"
@@ -491,6 +561,12 @@ error in process filter: Wrong type argument: stringp, nil
      ;; (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
      
    #+end_src
+
+   helper function to load shell based on current buffer's directory
+
+   #+BEGIN_SRC emacs-lisp
+   (require 'shell-current-directory)
+   #+END_SRC
    
 ** dired
 
@@ -508,6 +584,11 @@ error in process filter: Wrong type argument: stringp, nil
    (setq dired-listing-switches "-alXGh --group-directories-first")
    #+end_src
    
+
+** julia
+   #+BEGIN_SRC emacs-lisp
+(require 'julia-mode)
+   #+END_SRC
 * Minor modes
 ** Ace jump mode
 #+BEGIN_SRC emacs-lisp
@@ -531,10 +612,8 @@ error in process filter: Wrong type argument: stringp, nil
 #+END_SRC
 
 ** Magit
-#+BEGIN_SRC emacs-lisp
-(require 'magit)
-#+END_SRC
-
+used to be vendored, but installed from elpa
+   
 Bind M-g to magit-status
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-g") 'magit-status)
@@ -694,9 +773,13 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 (key-chord-define-global "jk" 'ace-jump-mode)
 #+end_src
 
-** M-m replace-string
+** M-m replace-string M-M replace-regexp
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-m") 'replace-string)
+#+end_src
+
+   #+begin_src emacs-lisp
+(global-set-key (kbd "M-M") 'replace-regexp)
 #+end_src
 
 
@@ -712,7 +795,7 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
     
   #+end_src
 
-
+  
 * lazy writing (capitalize heads of sentences)
 
   epic fail
@@ -748,14 +831,19 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 * custom face setting
   #+begin_src emacs-lisp
-  (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-block ((t (:inherit shadow :background "selectedMenuItemTextColor" :foreground "Black")))))
+ ;;  (custom-set-faces
+ ;; ;; custom-set-faces was added by Custom.
+ ;; ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; ;; Your init file should contain only one such instance.
+ ;; ;; If there is more than one, they won't work right.
+ ;;  '(org-block ((t (:inherit shadow :background "DarkSlateGray" :foreground "Black")))))
   #+end_src
 
+  #+RESULTS:
+
+
+
+  
 * git
 
   use --word-diff in magit-diff-options (TODO: colors don't actually show up)
@@ -765,6 +853,31 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
   #+end_src
 
 
+#+BEGIN_EXAMPLE
+
+#+END_EXAMPLE
+  
 * list of installed packages 
   * yasnippet (ELPA)
     installed 2014/01/09
+  * auctex (ELPA)
+    installed 2014/01/11
+    updated from "11.87.2012-12-04" to ""  2014/11/07
+  * adding marmalade as a source
+
+    #+BEGIN_SRC emacs-lisp
+(require 'package)
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)
+    #+END_SRC
+   
+  * load-theme-buffer-local (marmalade)
+
+    installed 2014/02/01
+  
+    HT http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00431.html (googled)
+    HT https://github.com/vic/color-theme-buffer-local
+
+    
