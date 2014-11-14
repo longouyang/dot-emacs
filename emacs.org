@@ -409,17 +409,23 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 Helper function for git-friendly formatting
 bind to M-n
 #+begin_src emacs-lisp
-  (defun tex-git-friendly ()
-    (interactive)
-    (replace-string ". " ".\n " nil (region-beginning) (region-end))
+(defun tex-git-friendly ()
+  (interactive)
+  (replace-string ". " ".\n " nil (region-beginning) (region-end))
   )
-  
-  (defun LaTeX-mode-keys ()
-    "Modify keymaps used by `html-mode'."
-    (local-set-key (kbd "M-n") 'tex-git-friendly)
-    )
-  
-  (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
+
+(defun LaTeX-mode-keys ()
+  "Modify keymaps used by `LaTeX-mode'."
+
+  ;; format a selection in a git-friendly manner (one line per paragraph)
+  (local-set-key (kbd "M-n") 'tex-git-friendly)
+  ;; shortcut for bold
+  (local-set-key (kbd "s-b") (lambda ()  (interactive) (TeX-font nil ?\C-b)))
+  ;; shortcut for italic italic
+  (local-set-key (kbd "s-i") (lambda ()  (interactive) (TeX-font nil ?\C-e))) 
+  )
+
+(add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
 #+end_src
 
 visual line mode
