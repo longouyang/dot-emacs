@@ -615,9 +615,18 @@ error in process filter: Wrong type argument: stringp, nil
 used to be vendored, but installed from elpa
    
 Bind M-g to magit-status
+
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-g") 'magit-status)
 #+end_src
+
+
+show fine differences at current hunk
+HT https://github.com/vincentbernat/dot.emacs/blob/master/magit.conf.el
+HT google for < "word-diff" magit >
+#+BEGIN_SRC emacs-lisp
+(setq magit-diff-refine-hunk t) 
+#+END_SRC
 
 ** Paredit
 #+begin_src emacs-lisp
