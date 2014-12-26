@@ -375,7 +375,15 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'org-display-inline-images)
 #+end_src 
-*** ESS: 
+*** org-src
+
+bind s-s to org-edit-src-save:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-src-mode-hook (lambda ()
+                               (local-set-key (kbd "s-s") 'org-edit-src-save)))
+#+END_SRC
+
 ** Church
 #+BEGIN_SRC emacs-lisp
 (require 'church)
