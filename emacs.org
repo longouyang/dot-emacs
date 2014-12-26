@@ -407,7 +407,7 @@ bind to M-n
 #+begin_src emacs-lisp
 (defun tex-git-friendly ()
   (interactive)
-  (replace-string ". " ".\n " nil (region-beginning) (region-end))
+  (replace-string ". " ".\n" nil (region-beginning) (region-end))
   )
 
 (defun LaTeX-mode-keys ()
