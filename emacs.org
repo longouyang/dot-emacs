@@ -545,29 +545,34 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
 
    good directory tracking (so autocomplete works even after I use z to jump around)
    HT http://www.emacswiki.org/emacs/ShellDirtrackByProcfs
-   but it doesn't quite work
 
-   the messages buffer complains about:
+   by default, on osx, the messages buffer complains about:
    #+BEGIN_EXAMPLE
 error in process filter: locate-file: Wrong type argument: stringp, nil
 error in process filter: Wrong type argument: stringp, nil
    #+END_EXAMPLE
 
+   this is because /proc doesn't exist. i had to hack this in using lsof (HT http://stackoverflow.com/a/8331292/351392)
+
    #+begin_src emacs-lisp
-     ;; (defun track-shell-directory/procfs ()
-     ;;   (shell-dirtrack-mode 0)
-     ;;   (add-hook 'comint-preoutput-filter-functions
-     ;;             (lambda (str)
-     ;;               (prog1 str
-     ;;                 (when (string-match comint-prompt-regexp str)
-     ;;                   (cd (file-symlink-p
-     ;;                        (format "/proc/%s/cwd" (process-id
-     ;;                                                (get-buffer-process
-     ;;                                                 (current-buffer)))))))))
-     ;;             nil t))
-     
-     ;; (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
-     
+(defun track-shell-directory/procfs ()
+  (shell-dirtrack-mode 0)
+  (add-hook 'comint-preoutput-filter-functions
+            (lambda (str)
+              (prog1 str
+                (when (string-match comint-prompt-regexp str) 
+                  (cd
+                   (shell-command-to-string (format "lsof -d cwd | grep %s | tail -1 | cut -c58- | tr -d \"\n\""
+                                          (process-id (get-buffer-process (current-buffer)))))
+                   ;; (file-symlink-p
+                      ;;  (format "/proc/%s/cwd" (process-id
+                      ;;                          (get-buffer-process
+                      ;;                           (current-buffer)))))
+                      ))))
+            nil t)
+  )
+
+(add-hook 'shell-mode-hook 'track-shell-directory/procfs)
    #+end_src
 
    helper function to load shell based on current buffer's directory
