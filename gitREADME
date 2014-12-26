@@ -1,1 +1,0 @@
-The repository on corn is "bare", which makes the solarized submodule a pain to work with. To get that working to begin with, I temporarily set "bare = false" in .git/config on corn, then ran "git submodule init" and "git submodule update" to pull in solarized, and then switched back to "bare = true".

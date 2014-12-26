@@ -8,12 +8,6 @@ the `elpa/` directory is for ELPA packages (i.e., the directory for `M-x list-pa
 
 the `vendor/` directory is for bigger packages (usually git submodules) and one-off files i use
 
-# stuff from old readme
+# git
 
-org-mode is installed from macports
-ESS is installed from website
-
-solarized theme is installed from my fork of https://github.com/sellout/emacs-color-theme-solarized
-- i added a few lines of my own customization to solarized-definitions.el to make org-mode eaasier to read
-
-
+the repository on corn is "bare", which makes the solarized submodule a pain to work with. to get that working to begin with, i temporarily set "bare = false" in .git/config on corn, then ran "git submodule init" and "git submodule update" to pull in solarized, and then switched back to "bare = true".
