@@ -113,18 +113,23 @@ FIXME
 #+END_SRC
 
 * Expand-region
-#+begin_src emacs-lisp
+
+  #+begin_src emacs-lisp
 (require 'expand-region)
 (global-set-key (kbd "C-.") 'er/expand-region)
 #+end_src
+
 * yasnippet
-#+begin_src emacs-lisp
+
+  #+begin_src emacs-lisp
 (require 'yasnippet)
 (add-to-list 'yas-snippet-dirs "~/dot-emacs/snippets/ess-mode")
 (yas-global-mode 1)
 #+end_src
+
 * ESS
-#+BEGIN_SRC emacs-lisp
+
+  #+BEGIN_SRC emacs-lisp
 (require 'ess-site)
 (ess-toggle-underscore nil)
 
@@ -153,7 +158,6 @@ FIXME
 
   #+RESULTS:
   | lambda | nil | (progn (set-variable (quote comint-scroll-to-bottom-on-output) (quote this)) (set-variable (quote comint-scroll-show-maximum-output) t) (set-variable (quote comint-scroll-to-bottom-on-input) (quote this))) |
-
 
 
 * Major modes
@@ -263,7 +267,27 @@ end tell" url)))
 #+END_SRC
 
 *** LaTeX
+    
+    Enable source-specials for Control-click forward/reverse search.
+    #+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook
+          (lambda () 
+            (TeX-PDF-mode 1)
+            (TeX-source-correlate-mode 1)
+            (setq TeX-source-correlate-method 'synctex) 
+            (setq TeX-view-program-list
+                  '(("Skim"
+                     "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
+                  TeX-view-program-selection
+                  '((output-pdf "Skim")))))
+    #+END_SRC
 
+    turn on reftex
+
+    #+BEGIN_SRC emacs-lisp
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    #+END_SRC
+    
 FIXME. Oh god this is a shambles.
 
 cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-org-mode-to-pdf-via-xelatex/
@@ -294,20 +318,6 @@ cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-o
 ;;       '(("" "graphicx" t)
 ;; 	("" "longtable" nil)
 ;; 	("" "float" nil)))
-
-
-(add-hook 'LaTeX-mode-hook
-          (lambda ()
-            ;; Enable source-specials for Control-click forward/reverse search.
-            (TeX-PDF-mode 1)
-            (TeX-source-correlate-mode 1)
-            (setq TeX-source-correlate-method 'synctex)
-
-            (setq TeX-view-program-list
-                  '(("Skim"
-                     "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
-                  TeX-view-program-selection
-                  '((output-pdf "Skim")))))
 
 ;; (defun my-auto-tex-parameters ()
 ;;   "Automatically select the tex packages to include."
@@ -362,8 +372,6 @@ cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-o
 ;; )
 
 ;; (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
-
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 #+END_SRC
 
 *** Display images inline after code evaluation
@@ -518,7 +526,6 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
    #+RESULTS:
    | er/add-python-mode-expansions | make-enter-indent | (lambda nil (setq indent-tabs-mode nil tab-width 2)) |
 
-
 ** Markdown
    #+begin_src emacs-lisp
      (autoload 'markdown-mode "markdown-mode"
@@ -574,6 +581,8 @@ error in process filter: Wrong type argument: stringp, nil
   )
 
 (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
+
+
    #+end_src
 
    helper function to load shell based on current buffer's directory
