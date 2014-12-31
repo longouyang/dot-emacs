@@ -562,7 +562,7 @@ error in process filter: Wrong type argument: stringp, nil
               (prog1 str
                 (when (string-match comint-prompt-regexp str) 
                   (cd
-                   (car (last (split-string (shell-command-to-string (format "lsof -d cwd | grep %s | tail -1 | tr -d \"\n\""
+                   (car (last (split-string (shell-command-to-string (format "lsof -d cwd | grep %s | tail -1 | tr -d \"\n\" | sed 's/[ \t]*//' "
                                                                              (process-id (get-buffer-process (current-buffer)))))
                                             " ")))
                    ;; (file-symlink-p
