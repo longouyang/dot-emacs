@@ -80,6 +80,16 @@ Disabling scroll bars w/o custom-set-variable: http://emacswiki.org/emacs/Scroll
 )
 #+END_SRC
 
+** change scratch major mode and initial contents
+HT http://emacsredux.com/blog/2014/07/25/configure-the-scratch-buffers-mode/
+
+#+BEGIN_SRC emacs-lisp
+(setq initial-major-mode 'org-mode)
+(setq initial-scratch-message "#+TITLE: scratch
+
+")
+#+END_SRC
+
 ** Solarized
 NB: need to have iterm2 set to report TERM=xterm-16color
 for solarized colors to look right in terminal
