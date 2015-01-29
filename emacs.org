@@ -1,7 +1,8 @@
 #+TITLE: Literate .emacs
 #+AUTHOR: Long Ouyang
 #+PROPERTY: tangle yes
-#+HIDESTARS: yes
+#+STARTUP: hidestars
+#+STARTUP: indent
 
 * Load path
 
@@ -278,19 +279,20 @@ end tell" url)))
 
 *** LaTeX
     
-    Enable source-specials for Control-click forward/reverse search.
-    #+BEGIN_SRC emacs-lisp
-(add-hook 'LaTeX-mode-hook
-          (lambda () 
-            (TeX-PDF-mode 1)
-            (TeX-source-correlate-mode 1)
-            (setq TeX-source-correlate-method 'synctex) 
-            (setq TeX-view-program-list
-                  '(("Skim"
-                     "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
-                  TeX-view-program-selection
-                  '((output-pdf "Skim")))))
-    #+END_SRC
+Enable source-specials for Control-click forward/reverse search.
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'LaTeX-mode-hook
+ (lambda () 
+   (TeX-PDF-mode 1)
+   (TeX-source-correlate-mode 1)
+   (setq TeX-source-correlate-method 'synctex) 
+   (setq TeX-view-program-list
+         '(("Skim"
+            "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
+         TeX-view-program-selection
+         '((output-pdf "Skim")))))
+#+END_SRC
 
     turn on reftex
 
@@ -392,7 +394,8 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 #+begin_src emacs-lisp
 (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
 (add-hook 'org-mode-hook 'org-display-inline-images)
-#+end_src 
+#+end_src
+
 *** org-src
 
 bind s-s to org-edit-src-save:
@@ -549,29 +552,30 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
    I'm apparently using the markdown parser from Ruby's gems, which doesn't play nice with markdown previews / exports. 
    #+begin_src emacs-lisp
 (custom-set-variables '(markdown-command "~/Library/Haskell/bin/pandoc"))
+;;(custom-set-variables '(markdown-command "redcarpet"))
    #+end_src
 
    Use a css file in ~/dot-emacs/markdown.css (FIXME: doesn't work currently)
    #+begin_src emacs-lisp
-(custom-set-variables '(markdown-css-path "//localhost/Users/longouyang/dot-emacs/markdown.css"))
+(custom-set-variables '(markdown-css-path "file:///Users/long/dot-emacs/markdown.css"))
    #+end_src
 
    #+RESULTS:
 
 ** shell
 
-   good directory tracking (so autocomplete works even after I use z to jump around)
-   HT http://www.emacswiki.org/emacs/ShellDirtrackByProcfs
+good directory tracking (so autocomplete works even after I use z to jump around)
+HT http://www.emacswiki.org/emacs/ShellDirtrackByProcfs
 
-   by default, on osx, the messages buffer complains about:
-   #+BEGIN_EXAMPLE
+by default, on osx, the messages buffer complains about:
+#+BEGIN_EXAMPLE
 error in process filter: locate-file: Wrong type argument: stringp, nil
 error in process filter: Wrong type argument: stringp, nil
-   #+END_EXAMPLE
+#+END_EXAMPLE
 
-   this is because /proc doesn't exist. i had to hack this in using lsof (HT http://stackoverflow.com/a/8331292/351392)
+this is because /proc doesn't exist. i had to hack this in using lsof (HT http://stackoverflow.com/a/8331292/351392)
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (defun track-shell-directory/procfs ()
   (shell-dirtrack-mode 0)
   (add-hook 'comint-preoutput-filter-functions
@@ -581,25 +585,17 @@ error in process filter: Wrong type argument: stringp, nil
                   (cd
                    (car (last (split-string (shell-command-to-string (format "lsof -d cwd | grep %s | tail -1 | tr -d \"\n\" | sed 's/[ \t]*//' "
                                                                              (process-id (get-buffer-process (current-buffer)))))
-                                            " ")))
-                   ;; (file-symlink-p
-                      ;;  (format "/proc/%s/cwd" (process-id
-                      ;;                          (get-buffer-process
-                      ;;                           (current-buffer)))))
-                      ))))
-            nil t)
-  )
+                                            " ")))))))
+            nil t))
 
 (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
+#+end_src
 
+helper function to load shell based on current buffer's directory
 
-   #+end_src
-
-   helper function to load shell based on current buffer's directory
-
-   #+BEGIN_SRC emacs-lisp
-   (require 'shell-current-directory)
-   #+END_SRC
+#+BEGIN_SRC emacs-lisp
+(require 'shell-current-directory)
+#+END_SRC
    
 ** dired
 
@@ -618,9 +614,10 @@ error in process filter: Wrong type argument: stringp, nil
    #+end_src
 
 ** julia
-   #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (require 'julia-mode)
-   #+END_SRC
+#+END_SRC
+
 * Minor modes
 ** Ace jump mode
 #+BEGIN_SRC emacs-lisp
@@ -784,7 +781,7 @@ Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/A
 
 ** windmove ("geographic"  window switching)
 
-   HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
+HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
    
 #+begin_src emacs-lisp
 (global-set-key (kbd "<s-left>") 'windmove-left) 
@@ -795,18 +792,20 @@ Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/A
 
 ** delete-window
 
-   s-0 as a shorter version of C-x 0
+s-0 as a shorter version of C-x 0
 
-   #+begin_src emacs-lisp
-   (global-set-key (kbd "s-0") 'delete-window)
-   #+end_src
+#+begin_src emacs-lisp
+(global-set-key (kbd "s-0") 'delete-window)
+#+end_src
 
 ** Go to indent
 Remap from default M-m to M-i
 HT http://emacsrocks.com/e04.html (around 1:15 in video)
+
 #+begin_src emacs-lisp
 (define-key global-map (kbd "M-i") 'back-to-indentation)
-#+end_src 
+#+end_src
+
 ** Key chords
 #+begin_src emacs-lisp
 (require 'key-chord)
