@@ -512,7 +512,7 @@ HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-h
 (setq js2-mode-hook
   '(lambda () (progn
     (setq indent-tabs-mode nil)
-    (setq js2-basic-offset 4))))
+    (setq js2-basic-offset 2))))
 #+end_src
 
 TODO: figre out how to globally set js2-basic-offset to 2, rather than patching it in with the mode hook
