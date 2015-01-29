@@ -470,6 +470,7 @@ But note that I change the filename from js2 to js2-mode, so I had to change the
 #+begin_src emacs-lisp
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.wppl$" . js2-mode))
 #+end_src
 *** Declaring globals
 
