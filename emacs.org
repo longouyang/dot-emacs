@@ -881,15 +881,6 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 
 
-* git
-
-  use --word-diff in magit-diff-options (TODO: colors don't actually show up)
-  #+begin_src emacs-lisp
-  ;; (setq magit-diff-options (list "--color" "--word-diff=color"))
-  (setq magit-diff-options nil)
-  #+end_src
-
-
 * list of installed packages 
   * yasnippet (ELPA)
     installed 2014/01/09
