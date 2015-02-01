@@ -386,6 +386,15 @@ cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-o
 ;; (add-hook 'org-export-latex-after-initial-vars-hook 'my-auto-tex-parameters)
 #+END_SRC
 
+*** Trigger linum mode and change linum marker
+
+#+BEGIN_SRC emacs-lisp
+(add-hook
+ 'LaTeX-mode-hook
+ (lambda ()
+   (linum-mode)
+   (set-variable 'linum-format "•")))
+#+END_SRC
 *** Display images inline after code evaluation
 
 HT: https://github.com/erikriverson/org-mode-R-tutorial/blob/master/org-mode-R-tutorial.org
