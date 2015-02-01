@@ -886,7 +886,12 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 
 * custom face setting
-  #+begin_src emacs-lisp
+
+#+BEGIN_SRC emacs-lisp
+(set-face-background 'show-paren-match "#99ccff")
+#+END_SRC
+
+#+begin_src emacs-lisp
  ;;  (custom-set-faces
  ;; ;; custom-set-faces was added by Custom.
  ;; ;; If you edit it by hand, you could mess it up, so be careful.
