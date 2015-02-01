@@ -730,20 +730,21 @@ HT http://emacswiki.org/emacs/AutoIndentation
 ;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
 (setq interprogram-cut-function nil)
 (setq interprogram-paste-function nil)
+
 (defun paste-from-pasteboard ()
   (interactive)
-  (and mark-active (filter-buffer-substring (region-beginning) (region-end) t))
-  (insert (ns-get-pasteboard))
-  )
-(defun copy-to-pasteboard (p1 p2)
-  (interactive "r*")
-  (ns-set-pasteboard (buffer-substring p1 p2))
-  (message "Copied selection to pasteboard")
-  )
-(defun cut-to-pasteboard (p1 p2) (interactive "r*") (ns-set-pasteboard (filter-buffer-substring p1 p2 t)) )
+  (insert (shell-command-to-string "pbpaste")))
+
+;; HT https://github.com/p-baleine/dot-emacs/blob/master/osx-clipboard.el
+(defun copy-to-pasteboard ()
+  (interactive)
+  (if (or (and (boundp 'mark-active) mark-active)
+          (and (fboundp 'region-exists-p) (region-exists-p)))
+      (call-process-region 
+       (region-beginning) (region-end) "pbcopy" nil t t)))
+
 (global-set-key (kbd "s-v") 'paste-from-pasteboard)
 (global-set-key (kbd "s-c") 'copy-to-pasteboard)
-(global-set-key (kbd "s-x") 'cut-to-pasteboard)
 #+END_SRC
 
 ** Autoindent yanked code
