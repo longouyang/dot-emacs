@@ -597,7 +597,15 @@ helper function to load shell based on current buffer's directory
 #+BEGIN_SRC emacs-lisp
 (require 'shell-current-directory)
 #+END_SRC
-   
+
+*** make node work by setting NODE_NO_READLINE
+
+HT http://stackoverflow.com/a/16632586/351392
+
+#+BEGIN_SRC emacs-lisp
+(setenv "NODE_NO_READLINE" "1")
+#+END_SRC
+
 ** dired
 
    Cut details from dired listing
