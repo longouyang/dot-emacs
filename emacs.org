@@ -921,27 +921,23 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 
 
-* list of installed packages 
-  * yasnippet (ELPA)
-    installed 2014/01/09
-  * auctex (ELPA)
-    installed 2014/01/11
-    updated from "11.87.2012-12-04" to ""  2014/11/07
-  * adding marmalade as a source
+* package management
 
     #+BEGIN_SRC emacs-lisp
 (require 'package)
-(add-to-list 'package-archives 
-    '("marmalade" .
-      "http://marmalade-repo.org/packages/"))
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
-    #+END_SRC
-   
-  * load-theme-buffer-local (marmalade)
+#+END_SRC
 
-    installed 2014/02/01
-  
-    HT http://lists.gnu.org/archive/html/help-gnu-emacs/2012-10/msg00431.html (googled)
-    HT https://github.com/vic/color-theme-buffer-local
 
-    
+TODO: programmatically list installed packages here
+
+** log
+
+*** 2015/02/04: org, ess adventures
+
+tried to install org-mode from org archive to get rid of "org-mode fontification erorr" (HT https://groups.google.com/forum/#!topic/gnu.emacs.bug/ol-kKELpOMo) but i still get the problem.
+
+tried then reinstalling ess after installing org - no luck.
