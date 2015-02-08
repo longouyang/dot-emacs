@@ -215,7 +215,7 @@ HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-o
    (scheme . t)
    ))
 
-(setq org-src-fontify-natively t)
+(setq org-src-fontify-natively nil)
 (setq org-src-window-setup (quote current-window))
 (setq org-confirm-babel-evaluate nil)
 #+END_SRC
@@ -906,18 +906,8 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 #+BEGIN_SRC emacs-lisp
 (set-face-background 'show-paren-match "#99ccff")
+(set-face-background 'org-block "#eee8d5")
 #+END_SRC
-
-#+begin_src emacs-lisp
- ;;  (custom-set-faces
- ;; ;; custom-set-faces was added by Custom.
- ;; ;; If you edit it by hand, you could mess it up, so be careful.
- ;; ;; Your init file should contain only one such instance.
- ;; ;; If there is more than one, they won't work right.
- ;;  '(org-block ((t (:inherit shadow :background "DarkSlateGray" :foreground "Black")))))
-  #+end_src
-
-  #+RESULTS:
 
 
 
