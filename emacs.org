@@ -163,10 +163,20 @@ FIXME
                                       (set-variable 'comint-scroll-show-maximum-output t)
                                       (set-variable 'comint-scroll-to-bottom-on-input 'this))))
 
-  #+END_SRC
+#+END_SRC
 
-  #+RESULTS:
-  | lambda | nil | (progn (set-variable (quote comint-scroll-to-bottom-on-output) (quote this)) (set-variable (quote comint-scroll-show-maximum-output) t) (set-variable (quote comint-scroll-to-bottom-on-input) (quote this))) |
+#+RESULTS:
+| lambda | nil | (progn (set-variable (quote comint-scroll-to-bottom-on-output) (quote this)) (set-variable (quote comint-scroll-show-maximum-output) t) (set-variable (quote mint-scroll-to-bottom-on-input) (quote this)))   |
+
+prevent indentation of doom
+HT https://github.com/emacs-ess/ESS/issues/99
+#+BEGIN_SRC emacs-lisp
+(add-hook 'ess-mode-hook
+          (lambda ()
+            (setq ess-first-continued-statement-offset 2)
+            (setq ess-continued-statement-offset 0)
+            (setq ess-indent-level 2)))
+#+END_SRC
 
 
 * Major modes
