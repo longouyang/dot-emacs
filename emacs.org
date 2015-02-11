@@ -648,6 +648,13 @@ HT http://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
 (require 'julia-mode)
 #+END_SRC
 
+** Buffer
+
+C-x C-b occupies whole frame:
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-x\C-b" 'buffer-menu)
+#+END_SRC
+
 * Minor modes
 ** Ace jump mode
 #+BEGIN_SRC emacs-lisp
