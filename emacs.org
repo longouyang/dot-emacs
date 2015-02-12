@@ -427,6 +427,7 @@ bind s-s to org-edit-src-save:
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 #+end_src
+
 ** Tuareg (OCaml)
 #+begin_src emacs-lisp
 ;;; append-tuareg.el - Tuareg quick installation: Append this file to .emacs.
@@ -436,7 +437,7 @@ bind s-s to org-edit-src-save:
 (autoload 'camldebug "camldebug" "Run the Caml debugger" t)
 #+end_src
 
-** LaTeX 
+** LaTeX
 *** Enable synctex
 #+begin_src emacs-lisp
 (setq LaTeX-command "latex -synctex=1")
@@ -708,10 +709,10 @@ HT google for < "word-diff" magit >
 
 Use electric-pair-mode for non-lisps:
 #+begin_src emacs-lisp
-  ;; HT http://stackoverflow.com/a/913823/351392
-  ;; HT http://stackoverflow.com/questions/5298907/emacs-php-mode-and-paredit#comment12995031_5324458
-  
-  (electric-pair-mode)
+;; HT http://stackoverflow.com/a/913823/351392
+;; HT http://stackoverflow.com/questions/5298907/emacs-php-mode-and-paredit#comment12995031_5324458
+
+(electric-pair-mode)
 #+end_src
 
 ** origami
@@ -920,7 +921,7 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 * package management
 
-    #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
