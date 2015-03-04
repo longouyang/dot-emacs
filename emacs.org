@@ -194,6 +194,12 @@ HT https://github.com/emacs-ess/ESS/issues/99
     
 #+end_example
     
+*** indent subtrees by default
+
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-indented t)
+#+END_SRC
+
 *** src indentation 
 HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
 
