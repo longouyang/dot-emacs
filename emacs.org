@@ -687,6 +687,11 @@ Bind M-g to magit-status
 (global-set-key (kbd "M-g") 'magit-status)
 #+end_src
 
+open magit-status in fullscreen window
+HT http://stackoverflow.com/a/9440613/351392
+#+BEGIN_SRC emacs-lisp
+(setq magit-status-buffer-switch-function 'switch-to-buffer)
+#+END_SRC
 
 show fine differences at current hunk
 HT https://github.com/vincentbernat/dot.emacs/blob/master/magit.conf.el
