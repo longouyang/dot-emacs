@@ -945,3 +945,22 @@ TODO: programmatically list installed packages here
 tried to install org-mode from org archive to get rid of "org-mode fontification erorr" (HT https://groups.google.com/forum/#!topic/gnu.emacs.bug/ol-kKELpOMo) but i still get the problem.
 
 tried then reinstalling ess after installing org - no luck.
+
+* how to remove submodules
+
+
+#+BEGIN_EXAMPLE
+git submodule deinit vendor/submodule-name
+git rm -rf .git/modules/vendor/submodule-name
+# then remove the corresponding entry from .gitmodules
+#+END_EXAMPLE
+
+
+
+* living with nightlies
+
+for synctex to work, we need a working emacsclient binary inside /usr/bin. we do this by:
+
+#+BEGIN_EXAMPLE
+sudo ln -s /Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9/emacsclient /usr/bin/
+#+END_EXAMPLE
