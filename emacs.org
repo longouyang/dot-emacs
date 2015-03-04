@@ -695,6 +695,12 @@ HT google for < "word-diff" magit >
 (setq magit-diff-refine-hunk t) 
 #+END_SRC
 
+turn on visual line mode
+HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
+#+BEGIN_SRC emacs-lisp
+(add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
+#+END_SRC
+
 ** Paredit
 #+begin_src emacs-lisp
   (autoload 'paredit-mode "paredit"
