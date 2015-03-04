@@ -35,16 +35,26 @@ HT https://github.com/purcell/exec-path-from-shell
   (setq default-directory (concat (getenv "HOME") "/"))
   #+END_SRC
   
-* Backups
+* Backups and autosaves
 
+Change auto-backups directory
+HT http://stackoverflow.com/a/151946
 #+BEGIN_SRC emacs-lisp
-;; this no longer worked on my 24.3 install on mavericks
-; (defun make-backup-file-name (file)
-;   (concat "~/.emacs_backups/" (file-name-nondirectory file) "~"))
-
-;; HT http://stackoverflow.com/a/151946
 (setq backup-directory-alist '(("." . "~/.emacs_backups")))
 #+END_SRC
+
+Disable auto-saves
+#+BEGIN_SRC emacs-lisp
+(setq auto-save-default nil)
+#+END_SRC
+
+i tried changing the auto-save dir but couldn't get it to work:
+
+** attempt
+
+followed instructions in:
+http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
+
 
 * Search
 
