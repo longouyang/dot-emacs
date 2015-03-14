@@ -672,6 +672,14 @@ C-x C-b occupies whole frame:
 (global-set-key "\C-x\C-b" 'buffer-menu)
 #+END_SRC
 
+** css
+add to default folding style list for origami.el:
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'origami-parser-alist )(css-mode . origami-c-style-parser)
+#+END_SRC
+
+
 * Minor modes
 ** Ace jump mode
 #+BEGIN_SRC emacs-lisp
