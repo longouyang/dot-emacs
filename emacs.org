@@ -676,7 +676,8 @@ C-x C-b occupies whole frame:
 add to default folding style list for origami.el:
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'origami-parser-alist )(css-mode . origami-c-style-parser)
+(require 'origami)
+(add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
 #+END_SRC
 
 
