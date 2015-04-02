@@ -625,23 +625,25 @@ error in process filter: Wrong type argument: stringp, nil
 
 this is because /proc doesn't exist. i had to hack this in using lsof (HT http://stackoverflow.com/a/8331292/351392)
 
+2015/04/02: i had a suspicion that this was slow, so i optimized it a bit by storing pid as a local varaible and streamlining the string munging a bit
+HT http://stackoverflow.com/a/8331292/351392 for the -a flag
+HT http://stackoverflow.com/a/3567515/351392 for the -F flag and the pipes afterwards
+
 #+begin_src emacs-lisp
 (defun track-shell-directory/procfs ()
   (shell-dirtrack-mode 0)
+  (defvar pid (process-id (get-buffer-process (current-buffer))))
   (add-hook 'comint-preoutput-filter-functions
             (lambda (str)
               (prog1 str
-                (when (string-match comint-prompt-regexp str) 
-                  (cd
-                   (car (last (split-string (shell-command-to-string (format "lsof -d cwd | grep %s | tail -1 | tr -d \"\n\" | sed 's/[ \t]*//' "
-                                                                             (process-id (get-buffer-process (current-buffer)))))
-                                            " ")))))))
-            nil t))
+                (when (string-match comint-prompt-regexp str)
+                  (cd (shell-command-to-string (format "lsof -a -d cwd -p %s -Fn | tail -1 | cut -c2- | tr -d '\n'" pid))))))
+                                                                 nil t))
 
 (add-hook 'shell-mode-hook 'track-shell-directory/procfs)
 #+end_src
 
-helper function to load shell based on current buffer's directory
+loading shell based on current buffer's directory (melpa, i think)
 
 #+BEGIN_SRC emacs-lisp
 (require 'shell-current-directory)
