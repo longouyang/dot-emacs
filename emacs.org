@@ -15,10 +15,10 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 #+END_SRC
 
 * Copy important environment variables from my shell into emacs exec-path
- 
+
 HT https://github.com/purcell/exec-path-from-shell
-  
-2013/09/30, downloaded raw file from github and added here 
+
+2013/09/30, downloaded raw file from github and added here
 
 #+begin_src emacs-lisp
 (load "exec-path-from-shell.el")
@@ -34,7 +34,7 @@ HT https://github.com/purcell/exec-path-from-shell
   #+BEGIN_SRC emacs-lisp
   (setq default-directory (concat (getenv "HOME") "/"))
   #+END_SRC
-  
+
 * Backups and autosaves
 
 Change auto-backups directory
@@ -112,7 +112,7 @@ for solarized colors to look right in terminal
 disable theme before switching using =load-theme=
 http://stackoverflow.com/a/15595000/351392
 #+BEGIN_SRC emacs-lisp
-(defadvice load-theme 
+(defadvice load-theme
   (before theme-dont-propagate activate)
   (mapcar #'disable-theme custom-enabled-themes))
 #+END_SRC
@@ -197,20 +197,20 @@ HT https://github.com/emacs-ess/ESS/issues/99
 (add-hook 'org-mode-hook (lambda ()
                            (visual-line-mode 1)))
 #+END_SRC
-    
+
 *** example blocks background
 
 #+begin_example
-    
+
 #+end_example
-    
+
 *** indent subtrees by default
 
 #+BEGIN_SRC emacs-lisp
 (setq org-startup-indented t)
 #+END_SRC
 
-*** src indentation 
+*** src indentation
 HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
 
 #+begin_src emacs-lisp
@@ -303,15 +303,15 @@ end tell" url)))
 #+END_SRC
 
 *** LaTeX
-    
+
 Enable source-specials for Control-click forward/reverse search.
 #+BEGIN_SRC emacs-lisp
 (add-hook
  'LaTeX-mode-hook
- (lambda () 
+ (lambda ()
    (TeX-PDF-mode 1)
    (TeX-source-correlate-mode 1)
-   (setq TeX-source-correlate-method 'synctex) 
+   (setq TeX-source-correlate-method 'synctex)
    (setq TeX-view-program-list
          '(("Skim"
             "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
@@ -372,9 +372,9 @@ cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-o
 ;; 	  (""     "amssymb"   t)
 ;; 	  (""     "amsmath"   t)
 ;; 	  (""     "hyperref"  nil)))
-  
+
 ;;   ;; Packages to include when xelatex is used
-;;   ;; (see https://github.com/kjhealy/latex-custom-kjh for the 
+;;   ;; (see https://github.com/kjhealy/latex-custom-kjh for the
 ;;   ;; non-standard ones.)
 ;;   (if (string-match "LATEX_CMD: xelatex" (buffer-string))
 ;;       (setq org-export-latex-default-packages-alist
@@ -393,7 +393,7 @@ cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-o
 ;; 	      ("" "soul" t)
 ;; 	      ("xetex, colorlinks=true, urlcolor=FireBrick, plainpages=false, pdfpagelabels, bookmarksnumbered" "hyperref" nil)
 ;; 	      )))
-  
+
 ;;   ;; (if (string-match "LATEX_CMD: xelatex" (buffer-string))
 ;;   ;;     (setq org-export-latex-classes
 ;;   ;; 	    (cons '("article"
@@ -475,7 +475,7 @@ bind to M-n
   ;; shortcut for bold
   (local-set-key (kbd "s-b") (lambda ()  (interactive) (TeX-font nil ?\C-b)))
   ;; shortcut for italic italic
-  (local-set-key (kbd "s-i") (lambda ()  (interactive) (TeX-font nil ?\C-e))) 
+  (local-set-key (kbd "s-i") (lambda ()  (interactive) (TeX-font nil ?\C-e)))
   )
 
 (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
@@ -589,13 +589,13 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+end_src
 
-I'm apparently using the markdown parser from Ruby's gems, which doesn't play nice with markdown previews / exports. 
+I'm apparently using the markdown parser from Ruby's gems, which doesn't play nice with markdown previews / exports.
 #+begin_src emacs-lisp
 (custom-set-variables '(markdown-command "~/Library/Haskell/bin/pandoc"))
 ;;(custom-set-variables '(markdown-command "redcarpet"))
 #+end_src
 
-Use a css file in ~/dot-emacs/markdown.css (FIXME: doesn't work currently)
+Use a css file in ~/dot-emacs/markdown.css
 #+begin_src emacs-lisp
 (custom-set-variables '(markdown-css-path "file:///Users/long/dot-emacs/markdown.css"))
 #+end_src
@@ -705,7 +705,7 @@ add to default folding style list for origami.el:
 
 ** Magit
 used to be vendored, but installed from elpa
-   
+
 Bind M-g to magit-status
 
 #+begin_src emacs-lisp
@@ -722,7 +722,7 @@ show fine differences at current hunk
 HT https://github.com/vincentbernat/dot.emacs/blob/master/magit.conf.el
 HT google for < "word-diff" magit >
 #+BEGIN_SRC emacs-lisp
-(setq magit-diff-refine-hunk t) 
+(setq magit-diff-refine-hunk t)
 #+END_SRC
 
 turn on visual line mode
@@ -810,7 +810,7 @@ HT http://emacswiki.org/emacs/AutoIndentation
   (interactive)
   (if (or (and (boundp 'mark-active) mark-active)
           (and (fboundp 'region-exists-p) (region-exists-p)))
-      (call-process-region 
+      (call-process-region
        (region-beginning) (region-end) "pbcopy" nil t t)))
 
 (global-set-key (kbd "s-v") 'paste-from-pasteboard)
@@ -862,11 +862,11 @@ Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/A
 ** windmove ("geographic" window switching)
 
 HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
-   
+
 #+begin_src emacs-lisp
-(global-set-key (kbd "<s-left>") 'windmove-left) 
-(global-set-key (kbd "<s-right>") 'windmove-right) 
-(global-set-key (kbd "<s-up>") 'windmove-up) 
+(global-set-key (kbd "<s-left>") 'windmove-left)
+(global-set-key (kbd "<s-right>") 'windmove-right)
+(global-set-key (kbd "<s-up>") 'windmove-up)
 (global-set-key (kbd "<s-down>") 'windmove-down)
 #+end_src
 
@@ -908,10 +908,10 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
   #+begin_src emacs-lisp
     (defun tdo ()
       (interactive)
-    
+
     ;; HT http://www.gnu.org/software/emacs/manual/html_node/emacs/Select-Buffer.html
       (switch-to-buffer-other-frame "todo"))
-    
+
   #+end_src
 
 * lazy writing (capitalize heads of sentences)
@@ -934,15 +934,15 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
                (if (and transient-mark-mode mark-active)
                    (region-end)))))
       (perform-replace regexp to-string nil t delimited nil nil start end))
-    
+
     (defun capitalize-head ()
       (interactive)
        (replace-regexp "\\(^\\|\\. \\)\\([a-z]\\)"
                       (replace-eval-replacement concat "\\1" (replace-quote (upcase (match-string 2))))))
-    
+
     a b c. d e f. g h i.
-    
-    
+
+
   #+end_comment
 
 
