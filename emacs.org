@@ -777,6 +777,12 @@ Use electric-pair-mode for non-lisps:
           (set-buffer-modified-p nil))))))
 #+END_SRC
 
+** remove trailing whitespace before save
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
 * Keyboard
 ** Enter indents
 
