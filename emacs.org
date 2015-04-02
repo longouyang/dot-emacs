@@ -936,35 +936,12 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 
 * lazy writing (capitalize heads of sentences)
 
-  epic fail
-  #+begin_comment
-    (defun replace-regexp (regexp to-string &optional delimited start end)
-    ;;  (message to-string)
-      (interactive
-       (let ((common
-              (query-replace-read-args
-               (concat "Replace"
-                       (if current-prefix-arg " word" "")
-                       " regexp"
-                       (if (and transient-mark-mode mark-active) " in region" ""))
-               t)))
-         (list (nth 0 common) (nth 1 common) (nth 2 common)
-               (if (and transient-mark-mode mark-active)
-                   (region-beginning))
-               (if (and transient-mark-mode mark-active)
-                   (region-end)))))
-      (perform-replace regexp to-string nil t delimited nil nil start end))
+this works assuming that i have one sentence per line
 
-    (defun capitalize-head ()
-      (interactive)
-       (replace-regexp "\\(^\\|\\. \\)\\([a-z]\\)"
-                      (replace-eval-replacement concat "\\1" (replace-quote (upcase (match-string 2))))))
-
-    a b c. d e f. g h i.
-
-
-  #+end_comment
-
+#+BEGIN_EXAMPLE
+search:  ^\([a-z]\)
+replace: \,(upcase \1)
+#+END_EXAMPLE
 
 * custom face setting
 
