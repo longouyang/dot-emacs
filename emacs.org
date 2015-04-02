@@ -319,12 +319,23 @@ Enable source-specials for Control-click forward/reverse search.
          '((output-pdf "Skim")))))
 #+END_SRC
 
-    turn on reftex
+turn on reftex
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+#+END_SRC
 
-    #+BEGIN_SRC emacs-lisp
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    #+END_SRC
-    
+add texcount to menu
+
+HT http://app.uio.no/ifi/texcount/faq.html#emacs
+
+(after running command, do C-c C-l to view)
+
+#+BEGIN_SRC emacs-lisp
+(require 'tex)
+(add-to-list 'TeX-command-list
+      (list "TeXcount" "texcount %s.tex" 'TeX-run-command nil t))
+#+END_SRC
+
 FIXME. Oh god this is a shambles.
 
 cribbed a bunch from http://kieranhealy.org/blog/archives/2011/01/21/exporting-org-mode-to-pdf-via-xelatex/
