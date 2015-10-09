@@ -153,8 +153,7 @@ FIXME
 #+BEGIN_SRC emacs-lisp
 (require 'ess-site)
 (ess-toggle-underscore nil)
-
-(load "htmlize.el")
+(require 'htmlize)
 #+END_SRC
 
 keyboard shortcut for eval-buffer-and-go
