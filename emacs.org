@@ -656,6 +656,20 @@ HT http://stackoverflow.com/a/16632586/351392
 (setenv "NODE_NO_READLINE" "1")
 #+END_SRC
 
+*** clearing shell
+
+#+BEGIN_SRC emacs-lisp
+(defun my-shell-clear ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+(defun my-shell-hook ()
+  (local-set-key "\C-cl" 'my-shell-clear))
+
+(add-hook 'shell-mode-hook 'my-shell-hook)
+#+END_SRC
+
 ** dired
 
 Cut details from dired listing
