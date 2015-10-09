@@ -324,16 +324,16 @@ turn on reftex
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 #+END_SRC
 
-add texcount to menu
+add texcount to menu (disabled for now because requiring tex slows down startup)
 
 HT http://app.uio.no/ifi/texcount/faq.html#emacs
 
 (after running command, do C-c C-l to view)
 
 #+BEGIN_SRC emacs-lisp
-(require 'tex)
-(add-to-list 'TeX-command-list
-      (list "TeXcount" "texcount %s.tex" 'TeX-run-command nil t))
+;;(require 'tex)
+;; (add-to-list 'TeX-command-list
+;;       (list "TeXcount" "texcount %s.tex" 'TeX-run-command nil t))
 #+END_SRC
 
 FIXME. Oh god this is a shambles.
