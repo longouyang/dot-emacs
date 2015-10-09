@@ -990,3 +990,16 @@ for synctex to work, we need a working emacsclient binary inside /usr/bin. we do
 #+BEGIN_EXAMPLE
 sudo ln -s /Applications/Emacs.app/Contents/MacOS/bin-x86_64-10_9/emacsclient /usr/bin/
 #+END_EXAMPLE
+
+* profiling startup
+
+HT
+http://stackoverflow.com/a/5762495/351392
+http://oremacs.com/2015/02/24/emacs-speed-test/
+
+#+BEGIN_SRC sh
+emacs -Q -l profile-dotemacs.el \
+    --eval "(setq profile-dotemacs-file \
+        (setq load-file-name \"init.el\"))" \
+    -f profile-dotemacs
+#+END_SRC
