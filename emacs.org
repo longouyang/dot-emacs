@@ -56,6 +56,20 @@ followed instructions in:
 http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
 
 
+* package management
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (package-initialize)
+#+END_SRC
+
+
+TODO: programmatically list installed packages here
+
 * Search
 
 ** Auto wrap isearch
@@ -964,27 +978,6 @@ replace: \,(upcase \1)
 #+END_SRC
 
 
-
-* package management
-
-#+BEGIN_SRC emacs-lisp
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
-#+END_SRC
-
-
-TODO: programmatically list installed packages here
-
-** log
-
-*** 2015/02/04: org, ess adventures
-
-tried to install org-mode from org archive to get rid of "org-mode fontification erorr" (HT https://groups.google.com/forum/#!topic/gnu.emacs.bug/ol-kKELpOMo) but i still get the problem.
-
-tried then reinstalling ess after installing org - no luck.
 
 * how to remove submodules
 
