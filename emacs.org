@@ -4,6 +4,7 @@
 #+STARTUP: hidestars
 #+STARTUP: indent
 
+
 * Load path
 
 The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/emacs/LoadPath
@@ -802,6 +803,17 @@ Use electric-pair-mode for non-lisps:
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "s-;") 'origami-toggle-node)
+#+END_SRC
+
+** vimish-fold
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'vimish-fold-mode-hook
+          (lambda ()
+            (interactive)
+            (local-set-key (kbd "C-;") 'vimish-fold)
+            (local-set-key (kbd "s-;") 'vimish-fold-toggle)))
+(add-hook 'js-mode-hook 'vimish-fold-mode)
 #+END_SRC
 
 * Misc
