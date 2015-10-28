@@ -195,11 +195,16 @@ inferior-ess-mode-hook
 prevent indentation of doom
 HT https://github.com/emacs-ess/ESS/issues/99
 #+BEGIN_SRC emacs-lisp
-(add-hook 'ess-mode-hook
-          (lambda ()
-            (setq ess-first-continued-statement-offset 2)
-            (setq ess-continued-statement-offset 0)
-            (setq ess-indent-level 2)))
+;; (add-hook 'ess-mode-hook
+;;           (lambda ()
+;;             (setq ess-first-continued-statement-offset 2)
+;;             (setq ess-continued-statement-offset 0)
+;;             (setq ess-indent-level 2)))
+#+END_SRC
+
+use rstudio style
+#+BEGIN_SRC emacs-lisp
+(setq ess-default-style 'RStudio)
 #+END_SRC
 
 
