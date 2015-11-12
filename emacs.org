@@ -470,14 +470,12 @@ bind s-s to org-edit-src-save:
 (add-hook 'org-src-mode-hook (lambda ()
                                (local-set-key (kbd "s-s") 'org-edit-src-save)))
 #+END_SRC
-
 ** Church
 #+BEGIN_SRC emacs-lisp
 (require 'church)
 (setq quack-fontify-style nil)
 (setq quack-programs (quote ("o" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi" "ikarus" "ssh -t alonzo@nospoon.mit.edu ikarus")))
 #+END_SRC
-
 
 ** Tuareg (OCaml)
 #+begin_src emacs-lisp
@@ -531,7 +529,6 @@ bind to M-n
    (linum-mode)
    (set-variable 'linum-format "•")))
 #+END_SRC
-
 ** js2
 2013/03/19: installed and compiled according to https://code.google.com/p/js2-mode/wiki/InstallationInstructions
 
@@ -611,7 +608,6 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
            (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
            )))
 #+END_SRC
-
 ** Python
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil)
@@ -784,14 +780,14 @@ Bind M-g to magit-status
   )
 #+END_SRC
 
-** Paredit
+** paredit
 #+begin_src emacs-lisp
-  (autoload 'paredit-mode "paredit"
-    "Minor mode for pseudo-structurally editing Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
-  (add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
-  (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
-  (add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
+(autoload 'paredit-mode "paredit"
+  "Minor mode for pseudo-structurally editing Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       (lambda () (paredit-mode +1)))
+(add-hook 'lisp-mode-hook             (lambda () (paredit-mode +1)))
+(add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode +1)))
+(add-hook 'scheme-mode-hook           (lambda () (paredit-mode +1)))
 #+end_src
 
 #+RESULTS:
@@ -1006,7 +1002,7 @@ replace: \,(upcase \1)
 
 #+BEGIN_EXAMPLE
 git submodule deinit vendor/submodule-name
-git rm -rf .git/modules/vendor/submodule-name
+rm -rf .git/modules/vendor/submodule-name
 # then remove the corresponding entry from .gitmodules
 #+END_EXAMPLE
 
