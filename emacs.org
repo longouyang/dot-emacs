@@ -738,17 +738,15 @@ C-x C-b occupies whole frame:
 (global-set-key "\C-x\C-b" 'buffer-menu)
 #+END_SRC
 
-
 * Minor modes
 ** ace-jump-mode
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
-  :init
+  :config
+  (ace-jump-mode-enable-mark-sync)
   (key-chord-define-global "jk" 'ace-jump-mode)
   (key-chord-define-global "kp" 'ace-jump-mode-pop-mark)
   (setq ace-jump-mode-scope 'frame)
-  :config
-  (ace-jump-mode-enable-mark-sync)
 )
 #+END_SRC
 
