@@ -57,7 +57,21 @@ followed instructions in:
 http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
 
 
-* package management
+* Utilities
+** use-package
+
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+#+END_SRC
+
+** Key chords
+#+begin_src emacs-lisp
+(use-package key-chord
+  :config
+  (key-chord-mode 1))
+#+end_src
+
+* Package management
 
 #+BEGIN_SRC emacs-lisp
 (require 'package)
@@ -66,10 +80,6 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-(require 'use-package)
 #+END_SRC
 
 * Search
@@ -740,25 +750,16 @@ C-x C-b occupies whole frame:
 
 
 * Minor modes
-** Ace jump mode
+** ace-jump-mode
 #+BEGIN_SRC emacs-lisp
-(autoload
-  'ace-jump-mode
-  "ace-jump-mode"
-  "Emacs quick move minor mode"
-  t)
-
-(autoload
-  'ace-jump-mode-pop-mark
-  "ace-jump-mode"
-  "Ace jump back:-)"
-  t)
-
-(setq ace-jump-mode-scope 'frame)
-
-(eval-after-load "ace-jump-mode"
-  '(ace-jump-mode-enable-mark-sync))
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+(use-package ace-jump-mode
+  :init
+  (key-chord-define-global "jk" 'ace-jump-mode)
+  (key-chord-define-global "kp" 'ace-jump-mode-pop-mark)
+  (setq ace-jump-mode-scope 'frame)
+  :config
+  (ace-jump-mode-enable-mark-sync)
+)
 #+END_SRC
 
 ** Magit
@@ -966,12 +967,6 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 (define-key global-map (kbd "M-i") 'back-to-indentation)
 #+end_src
 
-** Key chords
-#+begin_src emacs-lisp
-(require 'key-chord)
-(key-chord-mode 1)
-(key-chord-define-global "jk" 'ace-jump-mode)
-#+end_src
 
 ** M-m replace-string M-M replace-regexp
 #+begin_src emacs-lisp
