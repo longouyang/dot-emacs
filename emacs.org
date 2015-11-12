@@ -580,13 +580,32 @@ Do soft tabs in javascript and use only 4 spaces rather than 8
 HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-hook parts
 
 #+begin_src emacs-lisp
-(setq js2-mode-hook
+(add-hook 'js2-mode-hook
   '(lambda () (progn
     (setq indent-tabs-mode nil)
     (setq js2-basic-offset 2))))
 #+end_src
 
 TODO: figre out how to globally set js2-basic-offset to 2, rather than patching it in with the mode hook
+
+
+
+*** reading externs from .jsglobal file in same directory
+
+#+BEGIN_SRC emacs-lisp
+;; HT http://ergoemacs.org/emacs/elisp_read_file_content.html
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string (buffer-string) "\n" t)))
+
+(add-hook 'js2-mode-hook
+      '(lambda ()
+         (progn
+           (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
+           )))
+#+END_SRC
 
 ** Python
 #+begin_src emacs-lisp
