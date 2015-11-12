@@ -3,3 +3,5 @@ init.el
 elpa/*
 auto-save-list/*
 emacs.el
+url
+vimish-fold
