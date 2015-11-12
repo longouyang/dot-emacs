@@ -762,32 +762,32 @@ C-x C-b occupies whole frame:
 )
 #+END_SRC
 
-** Magit
+** magit
 used to be vendored, but installed from elpa
 
 Bind M-g to magit-status
 
-#+begin_src emacs-lisp
-(global-set-key (kbd "M-g") 'magit-status)
-#+end_src
-
-open magit-status in fullscreen window
-HT http://stackoverflow.com/a/9440613/351392
 #+BEGIN_SRC emacs-lisp
-(setq magit-status-buffer-switch-function 'switch-to-buffer)
-#+END_SRC
+(use-package magit
+  :init
+  (setq magit-last-seen-setup-instructions "1.4.0")
 
-show fine differences at current hunk
-HT https://github.com/vincentbernat/dot.emacs/blob/master/magit.conf.el
-HT google for < "word-diff" magit >
-#+BEGIN_SRC emacs-lisp
-(setq magit-diff-refine-hunk t)
-#+END_SRC
+  :config
+  (bind-key "M-g" 'magit-status)
 
-turn on visual line mode
-HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
-#+BEGIN_SRC emacs-lisp
-(add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
+  ;; open magit-status in fullscreen window HT http://stackoverflow.com/a/9440613/351392
+  (setq magit-status-buffer-switch-function 'switch-to-buffer)
+
+  ;; show fine differences at current hunk
+  ;; HT https://github.com/vincentbernat/dot.emacs/blob/master/magit.conf.el
+  ;; HT google for < "word-diff" magit >
+  (setq magit-diff-refine-hunk t)
+
+  ;; turn on visual line mode
+  ;; HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
+  (add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
+
+  )
 #+END_SRC
 
 ** Paredit
