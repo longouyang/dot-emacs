@@ -1,0 +1,16 @@
+* todos
+
+programmatically list installed packages here
+
+* 2015/11/11: use-package 2.1 from melpa-stable
+* 2015/10/28: install vimish-fold via M-x package-install RET vimish-fold RET
+* 2015/10/21: upgrade js2-mode to 20150909 from melpa stable
+* 2015/10/20: upgrade ess to 15.09 from melpa-stable
+
+(had to add melpa stable as an archive; HT http://camdez.com/blog/2015/04/03/switching-to-melpa-stable/ )
+
+* 2015/02/04: org, ess adventures
+
+tried to install org-mode from org archive to get rid of "org-mode fontification erorr" (HT https://groups.google.com/forum/#!topic/gnu.emacs.bug/ol-kKELpOMo) but i still get the problem.
+
+tried then reinstalling ess after installing org - no luck.
