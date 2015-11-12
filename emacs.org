@@ -68,8 +68,9 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
 (package-initialize)
 #+END_SRC
 
-
-TODO: programmatically list installed packages here
+#+BEGIN_SRC emacs-lisp
+(require 'use-package)
+#+END_SRC
 
 * Search
 
@@ -737,16 +738,6 @@ C-x C-b occupies whole frame:
 (global-set-key "\C-x\C-b" 'buffer-menu)
 #+END_SRC
 
-** css
-add to default folding style list for origami.el:
-
-#+BEGIN_SRC emacs-lisp
-(require 'origami)
-(add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
-(add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
-(add-to-list 'origami-parser-alist '(ess-mode . origami-c-style-parser))
-#+END_SRC
-
 
 * Minor modes
 ** Ace jump mode
@@ -821,7 +812,12 @@ Use electric-pair-mode for non-lisps:
 ** origami
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "s-;") 'origami-toggle-node)
+(use-package origami
+  :config
+  (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
+  (add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
+  (add-to-list 'origami-parser-alist '(ess-mode . origami-c-style-parser))
+  (bind-key "s-;" 'origami-toggle-node origami-mode-map))
 #+END_SRC
 
 ** vimish-fold
