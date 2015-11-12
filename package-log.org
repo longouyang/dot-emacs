@@ -2,6 +2,7 @@
 
 programmatically list installed packages here
 
+* 2015/11/11: switch to haskell-mode 13.14 from melpa-stable
 * 2015/11/11: use-package 2.1 from melpa-stable
 * 2015/10/28: install vimish-fold via M-x package-install RET vimish-fold RET
 * 2015/10/21: upgrade js2-mode to 20150909 from melpa stable
