@@ -157,11 +157,12 @@ FIXME
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+END_SRC
 
-* Expand-region
+* expand-region
 
-  #+begin_src emacs-lisp
-(require 'expand-region)
-(global-set-key (kbd "C-.") 'er/expand-region)
+#+begin_src emacs-lisp
+(use-package expand-region
+  :config
+  (bind-key  "C-." 'er/expand-region))
 #+end_src
 
 * yasnippet
