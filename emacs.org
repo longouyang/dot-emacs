@@ -583,7 +583,7 @@ Do soft tabs in javascript and use only 4 spaces rather than 8
 HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-hook parts
 
 #+begin_src emacs-lisp
-(add-hook 'js2-mode-hook
+(add-hook 'js-mode-hook
   '(lambda () (progn
     (setq indent-tabs-mode nil)
     (setq js2-basic-offset 2))))
