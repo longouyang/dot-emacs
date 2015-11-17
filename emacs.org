@@ -62,6 +62,7 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
 
 #+BEGIN_SRC emacs-lisp
 (require 'use-package)
+(setq use-package-verbose t)
 #+END_SRC
 
 ** Key chords
@@ -173,85 +174,50 @@ FIXME
 (yas-global-mode 1)
 #+end_src
 
-* ESS
+* Major modes
+** ess
 
 (installed from melpa)
 
 #+BEGIN_SRC emacs-lisp
-(require 'ess-site)
-(ess-toggle-underscore nil)
 (require 'htmlize)
+(use-package ess-site
+  :config
+  (ess-toggle-underscore nil)
+  (bind-key "s-r" 'ess-eval-buffer-and-go ess-mode-map)
+  (add-hook 'inferior-ess-mode-hook (lambda ()
+                                      (progn
+                                        (set-variable 'comint-scroll-to-bottom-on-output 'this)
+                                        (set-variable 'comint-scroll-show-maximum-output t)
+                                        (set-variable 'comint-scroll-to-bottom-on-input 'this))))
+
+
+  ;; ;; prevent indentation of doom
+  ;; (add-hook 'ess-mode-hook
+  ;;           (lambda ()
+  ;;             (setq ess-first-continued-statement-offset 2)
+  ;;             (setq ess-continued-statement-offset 0)
+  ;;             (setq ess-indent-level 2)))
+
+
+  ;; use rstudio style
+  (setq ess-default-style 'RStudio)
+  )
+
 #+END_SRC
-
-keyboard shortcut for eval-buffer-and-go
-#+BEGIN_SRC emacs-lisp
-(add-hook 'ess-mode-hook (lambda ()
-                           (local-set-key (kbd "s-r") 'ess-eval-buffer-and-go)))
-#+END_SRC
-
-#+RESULTS:
-| lambda | nil | (local-set-key (kbd s-r) (quote ess-eval-buffer-and-go)) |
-
-inferior-ess-mode-hook
-#+BEGIN_SRC emacs-lisp
-(add-hook 'inferior-ess-mode-hook (lambda ()
-                                    (progn
-                                      (set-variable 'comint-scroll-to-bottom-on-output 'this)
-                                      (set-variable 'comint-scroll-show-maximum-output t)
-                                      (set-variable 'comint-scroll-to-bottom-on-input 'this))))
-
-#+END_SRC
-
-#+RESULTS:
-| lambda | nil | (progn (set-variable (quote comint-scroll-to-bottom-on-output) (quote this)) (set-variable (quote comint-scroll-show-maximum-output) t) (set-variable (quote mint-scroll-to-bottom-on-input) (quote this)))   |
-
-prevent indentation of doom
-HT https://github.com/emacs-ess/ESS/issues/99
-#+BEGIN_SRC emacs-lisp
-;; (add-hook 'ess-mode-hook
-;;           (lambda ()
-;;             (setq ess-first-continued-statement-offset 2)
-;;             (setq ess-continued-statement-offset 0)
-;;             (setq ess-indent-level 2)))
-#+END_SRC
-
-use rstudio style
-#+BEGIN_SRC emacs-lisp
-(setq ess-default-style 'RStudio)
-#+END_SRC
-
-
-* Major modes
-** Org
-*** visual line mode
-#+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook (lambda ()
-                           (visual-line-mode 1)))
-#+END_SRC
-
-*** example blocks background
-
-#+begin_example
-
-#+end_example
-
-*** indent subtrees by default
+** org
 
 #+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
+
+;; indent subtrees by default
 (setq org-startup-indented t)
-#+END_SRC
 
-*** src indentation
-HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
-
-#+begin_src emacs-lisp
+;; src indentation
+;; HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block
 (setq org-src-preserve-indentation t)
-#+end_src
 
-*** Load languages
-
-#+BEGIN_SRC emacs-lisp
-(require 'org)
+;; src block languages
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((R . t)
@@ -265,8 +231,10 @@ HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-o
 (setq org-src-fontify-natively nil)
 (setq org-src-window-setup (quote current-window))
 (setq org-confirm-babel-evaluate nil)
-#+END_SRC
 
+
+
+#+END_SRC
 *** Open URLs in Chrome
 #+BEGIN_SRC emacs-lisp
 (defun open-url-in-chrome (url)
@@ -722,7 +690,6 @@ HT http://stackoverflow.com/a/16632586/351392
 
 (add-hook 'shell-mode-hook 'my-shell-hook)
 #+END_SRC
-
 ** dired
 
 Cut details from dired listing
