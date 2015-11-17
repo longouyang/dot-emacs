@@ -609,6 +609,18 @@ TODO: figre out how to globally set js2-basic-offset to 2, rather than patching 
            (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
            )))
 #+END_SRC
+
+*** jsx mode
+
+HT http://jbm.io/2014/01/react-in-emacs-creature-comforts/
+
+#+BEGIN_SRC emacs-lisp
+(defun modify-syntax-table-for-jsx ()
+  (modify-syntax-entry ?< "(>")
+  (modify-syntax-entry ?> ")<"))
+
+(add-hook 'js-mode-hook 'modify-syntax-table-for-jsx)
+#+END_SRC
 ** Python
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil)
