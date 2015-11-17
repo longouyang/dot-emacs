@@ -715,16 +715,16 @@ HT http://stackoverflow.com/a/16632586/351392
 
 Cut details from dired listing
 HT http://www.emacswiki.org/emacs/DiredDetails
-#+begin_src emacs-lisp
-(require 'dired-details)
-(dired-details-install)
-(set-variable 'dired-details-hidden-string "- ")
-#+end_src
-
-List directories first
-HT http://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
-#+begin_src emacs-lisp
-   (setq dired-listing-switches "-alXGh --group-directories-first")
+*dont use for now because apparently emacs 24.4+ has dired-hide-details-mode*
+#+begin_src emacs-lisp :tangle no
+(use-package dired-details
+  :config
+  (dired-details-install)
+  (set-variable 'dired-details-hidden-string "- ")
+;; List directories first
+;; HT http://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
+  (setq dired-listing-switches "-alXGh --group-directories-first")
+)
 #+end_src
 
 ** julia
