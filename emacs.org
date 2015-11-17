@@ -956,6 +956,46 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 (define-key global-map (kbd "M-i") 'back-to-indentation)
 #+end_src
 
+** toggling window split
+
+HT http://www.emacswiki.org/emacs/ToggleWindowSplit
+#+BEGIN_SRC emacs-lisp
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+
+(global-set-key (kbd "C-x 4") 'toggle-window-split)
+#+END_SRC
+* node repl
+
+HT http://www.emacswiki.org/emacs/NodeJs
+
+#+BEGIN_SRC emacs-lisp
+(defun node-repl ()
+  (interactive)
+  (pop-to-buffer (make-comint "node-repl" "node" nil "--interactive")))
+#+END_SRC
 
 ** M-m replace-string M-M replace-regexp
 #+begin_src emacs-lisp
