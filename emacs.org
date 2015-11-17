@@ -728,7 +728,7 @@ HT http://www.emacswiki.org/emacs/DiredDetails
 #+end_src
 
 ** julia
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'julia-mode)
 #+END_SRC
 
