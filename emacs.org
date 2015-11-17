@@ -167,7 +167,7 @@ FIXME
 
 * yasnippet
 
-  #+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (require 'yasnippet)
 (add-to-list 'yas-snippet-dirs "~/dot-emacs/snippets/ess-mode")
 (yas-global-mode 1)
