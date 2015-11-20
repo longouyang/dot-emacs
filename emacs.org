@@ -800,6 +800,14 @@ Use electric-pair-mode for non-lisps:
 (add-hook 'js-mode-hook 'vimish-fold-mode)
 #+END_SRC
 
+** sweetjs
+
+#+BEGIN_SRC emacs-lisp
+(use-package sweetjs-mode
+  :load-path "vendor/sweetjs-mode"
+  :mode "\\.sjs\\'")
+#+END_SRC
+
 * Misc
 
 ** rename file and buffer
