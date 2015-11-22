@@ -81,6 +81,24 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
     (insert-file-contents filePath)
     (split-string (buffer-string) "\n" t)))
 #+END_SRC
+** rename file and buffer
+#+BEGIN_SRC emacs-lisp
+(defun rename-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (if (not filename)
+        (message "Buffer '%s' is not visiting a file!" name)
+      (if (get-buffer new-name)
+          (message "A buffer named '%s' already exists!" new-name)
+        (progn
+          (rename-file name new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil))))))
+#+END_SRC
+
 * Package management
 
 #+BEGIN_SRC emacs-lisp
@@ -757,24 +775,6 @@ Use electric-pair-mode for non-lisps:
 
 * Misc
 
-** rename file and buffer
-#+BEGIN_SRC emacs-lisp
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn
-          (rename-file name new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil))))))
-#+END_SRC
-
 ** remove trailing whitespace before save
 
 #+BEGIN_SRC emacs-lisp
@@ -890,13 +890,12 @@ HT http://emacsrocks.com/e04.html (around 1:15 in video)
 (define-key global-map (kbd "M-i") 'back-to-indentation)
 #+end_src
 
-
 ** M-m replace-string M-M replace-regexp
 #+begin_src emacs-lisp
 (global-set-key (kbd "M-m") 'replace-string)
 #+end_src
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (global-set-key (kbd "M-M") 'replace-regexp)
 #+end_src
 
