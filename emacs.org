@@ -72,6 +72,15 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
   (key-chord-mode 1))
 #+end_src
 
+** read-lines
+#+BEGIN_SRC emacs-lisp
+;; HT http://ergoemacs.org/emacs/elisp_read_file_content.html
+(defun read-lines (filePath)
+  "Return a list of lines of a file at filePath."
+  (with-temp-buffer
+    (insert-file-contents filePath)
+    (split-string (buffer-string) "\n" t)))
+#+END_SRC
 * Package management
 
 #+BEGIN_SRC emacs-lisp
@@ -499,90 +508,34 @@ bind to M-n
    (set-variable 'linum-format "•")))
 #+END_SRC
 ** js2
-2013/03/19: installed and compiled according to https://code.google.com/p/js2-mode/wiki/InstallationInstructions
 
-But note that I change the filename from js2 to js2-mode, so I had to change the second argument of the autoload line below
-
-2013/03/21: apparently Steve Yegge's google code repository is no longer under active development, so I reinstalled from the mooz github repository (https://github.com/mooz/js2-mode)
-
-
-2014/?: installed from elpa
+from melpa
 
 #+begin_src emacs-lisp
-(autoload 'js2-mode "js2-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.wppl$" . js2-mode))
+(use-package js2-mode
+  :mode (("\\.js$" . js2-mode)
+         ("\\.wppl$" . js2-mode))
+
+  :config
+
+  ;; allow missing semicolons
+  (setq js2-strict-missing-semi-warning nil)
+  ;; 2 spaces for tabs
+  (setq js2-basic-offset 2)
+
+  ;; read globals from .jsglobal
+  (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
+)
+
 #+end_src
-*** Declaring globals
-
-js2-mode underlines undefined variables, which might actually be defined because, say, they're included in a different script. On the emacswiki page, Tim Meadowcroft has a fix for this
-
-http://emacswiki.org/emacs/Js2Mode
-
-#+begin_src emacs-lisp
-;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
-;; add any symbols to a buffer-local var of acceptable global vars
-;; Note that we also support the "symbol: true" way of specifying names via a hack (remove any ":true"
-;; to make it look like a plain decl, and any ':false' are left behind so they'll effectively be ignored as
-;; you can;t have a symbol called "someName:false"
-(add-hook 'js2-post-parse-callbacks
-	  (lambda ()
-	    (when (> (buffer-size) 0)
-	      (let ((btext (replace-regexp-in-string
-			    ": *true" " "
-			    (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
-		(mapc (apply-partially 'add-to-list 'js2-additional-externs)
-		      (split-string
-		       (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
-		       " *, *" t))
-		))))
-#+end_src
-
-*** Allow missing semi colons
-#+begin_src emacs-lisp
-;(setq js2-missing-semi-one-line-override t)
-(setq js2-strict-missing-semi-warning nil)
-#+end_src
-
-*** Soft tabs
-
-Do soft tabs in javascript and use only 4 spaces rather than 8
-
-HT http://stackoverflow.com/a/7957258/351392 for indent-tabs-mode and js2-mode-hook parts
-
-#+begin_src emacs-lisp
-(add-hook 'js-mode-hook
-  '(lambda () (progn
-    (setq indent-tabs-mode nil)
-    (setq js2-basic-offset 2))))
-#+end_src
-
-TODO: figre out how to globally set js2-basic-offset to 2, rather than patching it in with the mode hook
-
-
-
-*** reading externs from .jsglobal file in same directory
-
-#+BEGIN_SRC emacs-lisp
-;; HT http://ergoemacs.org/emacs/elisp_read_file_content.html
-(defun read-lines (filePath)
-  "Return a list of lines of a file at filePath."
-  (with-temp-buffer
-    (insert-file-contents filePath)
-    (split-string (buffer-string) "\n" t)))
-
-(add-hook 'js2-mode-hook
-      '(lambda ()
-         (progn
-           (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
-           )))
-#+END_SRC
 
 *** jsx mode
 
 HT http://jbm.io/2014/01/react-in-emacs-creature-comforts/
 
-#+BEGIN_SRC emacs-lisp
+disable for now because it screws up some indentation for regular js
+
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun modify-syntax-table-for-jsx ()
   (modify-syntax-entry ?< "(>")
   (modify-syntax-entry ?> ")<"))
