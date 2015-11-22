@@ -797,7 +797,7 @@ Use electric-pair-mode for non-lisps:
             (interactive)
             (local-set-key (kbd "C-;") 'vimish-fold)
             (local-set-key (kbd "s-;") 'vimish-fold-toggle)))
-(add-hook 'js-mode-hook 'vimish-fold-mode)
+;; (add-hook 'js-mode-hook 'vimish-fold-mode)
 #+END_SRC
 
 ** sweetjs
