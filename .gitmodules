@@ -1,3 +1,6 @@
 [submodule "vendor/solarized"]
 	path = vendor/solarized
 	url = git@github.com:longouyang/emacs-color-theme-solarized.git
+[submodule "vendor/sweetjs-mode"]
+	path = vendor/sweetjs-mode
+	url = git@github.com:disnet/sweetjs-mode.git
