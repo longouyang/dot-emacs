@@ -209,6 +209,7 @@ FIXME
 #+BEGIN_SRC emacs-lisp
 (require 'htmlize)
 (use-package ess-site
+  :mode ("\\.R\\'" . R-mode)
   :config
   (ess-toggle-underscore nil)
   (bind-key "s-r" 'ess-eval-buffer-and-go ess-mode-map)
@@ -539,6 +540,7 @@ from melpa
 
   ;; allow missing semicolons
   (setq js2-strict-missing-semi-warning nil)
+
   ;; 2 spaces for tabs
   (setq js2-basic-offset 2)
 
@@ -703,11 +705,8 @@ Bind M-g to magit-status
 
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :init
-  (setq magit-last-seen-setup-instructions "1.4.0")
-
+  :bind ("M-g" . magit-status)
   :config
-  (bind-key "M-g" 'magit-status)
 
   ;; open magit-status in fullscreen window HT http://stackoverflow.com/a/9440613/351392
   (setq magit-status-buffer-switch-function 'switch-to-buffer)
@@ -720,7 +719,6 @@ Bind M-g to magit-status
   ;; turn on visual line mode
   ;; HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
   (add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
-
   )
 #+END_SRC
 
@@ -748,6 +746,7 @@ Use electric-pair-mode for non-lisps:
 
 #+BEGIN_SRC emacs-lisp
 (use-package origami
+  :defer t
   :config
   (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
