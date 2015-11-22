@@ -524,7 +524,9 @@ from melpa
   (setq js2-basic-offset 2)
 
   ;; read globals from .jsglobal
-  (setq js2-additional-externs (read-lines (concat (file-name-directory buffer-file-name) ".jsglobal")))
+  (let ((globals-file (concat (file-name-directory buffer-file-name) ".jsglobal")))
+    (when (file-exists-p globals-file)
+      (setq js2-additional-externs (read-lines globals-file))))
 )
 
 #+end_src
