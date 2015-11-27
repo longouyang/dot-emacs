@@ -322,7 +322,7 @@ for solarized colors to look right in terminal
         solarized-use-more-italic t
         solarized-emphasize-indicators nil
         solarized-distinct-fringe-background nil
-        solarized-high-contrast-mode-line nil
+        solarized-high-contrast-mode-line t
         solarized-scale-org-headlines nil
         )
   :config
@@ -896,7 +896,7 @@ Bind M-g to magit-status
   ;; HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
   (add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
 
-  (set-face-bold 'magit-section-title t)
+  ;; (set-face-bold 'magit-section-title t)
   )
 #+END_SRC
 
