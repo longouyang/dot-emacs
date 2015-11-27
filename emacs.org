@@ -4,7 +4,6 @@
 #+STARTUP: hidestars
 #+STARTUP: indent
 
-
 * Load path
 
 The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/emacs/LoadPath
@@ -55,7 +54,6 @@ i tried changing the auto-save dir but couldn't get it to work:
 
 followed instructions in:
 http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the-way/
-
 
 * Utilities
 ** use-package
@@ -160,8 +158,22 @@ for solarized colors to look right in terminal
 (https://github.com/sellout/emacs-color-theme-solarized/issues/71)
 
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'custom-theme-load-path "~/dot-emacs/vendor/solarized")
-(load-theme 'solarized-light t)
+;;(add-to-list 'custom-theme-load-path "~/dot-emacs/vendor/solarized")
+;;(load-theme 'solarized-light t)
+
+(use-package solarized-theme
+  :if window-system
+  :init
+  (setq solarized-use-variable-pitch nil
+        solarized-use-more-italic t
+        solarized-emphasize-indicators nil
+        solarized-distinct-fringe-background nil
+        solarized-high-contrast-mode-line nil
+        solarized-scale-org-headlines nil
+        )
+  :config
+  (load "solarized-theme-autoloads" nil t)
+  (load-theme 'solarized-light t))
 #+END_SRC
 
 disable theme before switching using =load-theme=
@@ -257,12 +269,9 @@ FIXME
    (scheme . t)
    ))
 
-(setq org-src-fontify-natively nil)
+(setq org-src-fontify-natively t)
 (setq org-src-window-setup (quote current-window))
 (setq org-confirm-babel-evaluate nil)
-
-
-
 #+END_SRC
 *** Open URLs in Chrome
 #+BEGIN_SRC emacs-lisp
@@ -730,6 +739,8 @@ Bind M-g to magit-status
   ;; turn on visual line mode
   ;; HT http://comments.gmane.org/gmane.comp.version-control.git.magit/1114
   (add-hook 'magit-mode-hook 'turn-on-visual-line-mode)
+
+  (set-face-bold 'magit-section-title t)
   )
 #+END_SRC
 
@@ -975,8 +986,32 @@ replace: \,(upcase \1)
 #+BEGIN_SRC emacs-lisp
 (set-face-background 'show-paren-match "#99ccff")
 (set-face-background 'org-block "#eee8d5")
-#+END_SRC
 
+(set-face-attribute 'org-block-begin-line nil :underline t)
+(set-face-attribute 'org-block-end-line nil :overline t :underline nil)
+
+;; use old org mode line headers
+;; TODO: figure out how to get color defs from solarized
+;; rather than manually listing them here
+(let ((yellow    "#b58900")
+      (orange    "#cb4b16")
+      (red       "#dc322f")
+      (magenta   "#d33682")
+      (violet    "#6c71c4")
+      (blue      "#268bd2")
+      (cyan      "#2aa198")
+      (green     "#859900"))
+  (set-face-attribute 'org-level-1 nil :foreground blue)
+  (set-face-attribute 'org-level-2 nil :foreground cyan)
+  (set-face-attribute 'org-level-3 nil :foreground yellow)
+  (set-face-attribute 'org-level-4 nil :foreground red)
+  (set-face-attribute 'org-level-5 nil :foreground "#657b83")
+  (set-face-attribute 'org-level-6 nil :foreground "#586e75")
+  (set-face-attribute 'org-level-7 nil :foreground orange)
+  (set-face-attribute 'org-level-8 nil :foreground violet))
+
+
+#+END_SRC
 
 
 * how to remove submodules
@@ -987,7 +1022,6 @@ git submodule deinit vendor/submodule-name
 rm -rf .git/modules/vendor/submodule-name
 # then remove the corresponding entry from .gitmodules
 #+END_EXAMPLE
-
 
 
 * living with nightlies
