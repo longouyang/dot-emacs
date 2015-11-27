@@ -26,14 +26,14 @@ HT https://github.com/purcell/exec-path-from-shell
 #+end_src
 
 * Environment variables
-  #+begin_src emacs-lisp
-  (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
-  #+end_src
+#+begin_src emacs-lisp
+(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+#+end_src
 
-  Make C-x f use HOME as the default directory
-  #+BEGIN_SRC emacs-lisp
-  (setq default-directory (concat (getenv "HOME") "/"))
-  #+END_SRC
+Make C-x f use HOME as the default directory
+#+BEGIN_SRC emacs-lisp
+(setq default-directory (concat (getenv "HOME") "/"))
+#+END_SRC
 
 * Backups and autosaves
 
