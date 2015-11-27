@@ -97,6 +97,12 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
           (set-buffer-modified-p nil))))))
 #+END_SRC
 
+** remove trailing whitespace before save
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
 * Package management
 
 #+BEGIN_SRC emacs-lisp
@@ -109,6 +115,154 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
 (package-initialize)
 #+END_SRC
 
+* Keyboard
+** Enter indents
+
+HT http://emacswiki.org/emacs/AutoIndentation
+#+begin_src emacs-lisp
+(defun make-enter-indent ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(add-hook 'python-mode-hook 'make-enter-indent)
+(add-hook 'html-mode-hook 'make-enter-indent)
+(add-hook 'org-mode-hook 'make-enter-indent)
+#+end_src
+
+** Copy/paste
+#+BEGIN_SRC emacs-lisp
+;; emacs 23.1 and later joins the system clipboard with the
+;; emacs killring. get rid of this.
+;; taken from: http://emacswiki.org/emacs/CopyAndPaste#toc10
+;; (setq interprogram-cut-function 'x-select-text)
+;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
+(setq interprogram-cut-function nil)
+(setq interprogram-paste-function nil)
+
+(defun paste-from-pasteboard ()
+  (interactive)
+  (insert (shell-command-to-string "pbpaste")))
+
+;; HT https://github.com/p-baleine/dot-emacs/blob/master/osx-clipboard.el
+(defun copy-to-pasteboard ()
+  (interactive)
+  (if (or (and (boundp 'mark-active) mark-active)
+          (and (fboundp 'region-exists-p) (region-exists-p)))
+      (call-process-region
+       (region-beginning) (region-end) "pbcopy" nil t t)))
+
+(global-set-key (kbd "s-v") 'paste-from-pasteboard)
+(global-set-key (kbd "s-c") 'copy-to-pasteboard)
+#+END_SRC
+
+** Autoindent yanked code
+Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/AutoIndentation
+#+begin_src emacs-lisp
+(dolist (command '(yank yank-pop))
+  (eval `(defadvice ,command (after indent-region activate)
+	   (and (not current-prefix-arg)
+		(member major-mode '(emacs-lisp-mode lisp-mode
+						     clojure-mode    scheme-mode
+						     haskell-mode    ruby-mode
+						     rspec-mode      python-mode
+						     c-mode          c++-mode
+						     objc-mode       latex-mode
+						     plain-tex-mode  js2-mode
+						     html-mode))
+		(let ((mark-even-if-inactive transient-mark-mode))
+		  (indent-region (region-beginning) (region-end) nil))))))
+#+end_src
+
+#+RESULTS:
+
+** Comments
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c C-=") 'comment-region)
+(global-set-key (kbd "C-c C--") 'uncomment-region)
+#+END_SRC
+
+** Next/previous window
+
+#+BEGIN_SRC emacs-lisp
+(defun prev-window ()
+  (interactive)
+  (other-window -1))
+
+(defun longs-next-window ()
+  (interactive)
+  (other-window 1))
+
+(global-set-key (kbd "C-x p") 'prev-window)
+(global-set-key (kbd "s-}") 'longs-next-window)
+(global-set-key (kbd "s-{") 'prev-window)
+#+END_SRC
+
+** windmove ("geographic" window switching)
+
+HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<s-left>") 'windmove-left)
+(global-set-key (kbd "<s-right>") 'windmove-right)
+(global-set-key (kbd "<s-up>") 'windmove-up)
+(global-set-key (kbd "<s-down>") 'windmove-down)
+#+end_src
+
+** delete-window
+
+s-0 as a shorter version of C-x 0
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "s-0") 'delete-window)
+#+end_src
+
+** Go to indent
+Remap from default M-m to M-i
+HT http://emacsrocks.com/e04.html (around 1:15 in video)
+
+#+begin_src emacs-lisp
+(define-key global-map (kbd "M-i") 'back-to-indentation)
+#+end_src
+
+** M-m replace-string M-M replace-regexp
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-m") 'replace-string)
+#+end_src
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "M-M") 'replace-regexp)
+#+end_src
+
+** toggling window split
+
+HT http://www.emacswiki.org/emacs/ToggleWindowSplit
+#+BEGIN_SRC emacs-lisp
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
+
+(global-set-key (kbd "C-x 4") 'toggle-window-split)
+#+END_SRC
 * Search
 
 ** Auto wrap isearch
@@ -558,6 +712,8 @@ from melpa
   (let ((globals-file (concat (file-name-directory buffer-file-name) ".jsglobal")))
     (when (file-exists-p globals-file)
       (setq js2-additional-externs (read-lines globals-file))))
+
+  (add-hook 'js-mode-hook 'make-enter-indent)
 )
 
 #+end_src
@@ -856,163 +1012,6 @@ Use electric-pair-mode for non-lisps:
   :mode "\\.sjs$")
 #+END_SRC
 
-* Misc
-
-** remove trailing whitespace before save
-
-#+BEGIN_SRC emacs-lisp
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+END_SRC
-
-* Keyboard
-** Enter indents
-
-HT http://emacswiki.org/emacs/AutoIndentation
-#+begin_src emacs-lisp
-(defun make-enter-indent ()
-  (local-set-key (kbd "RET") 'newline-and-indent))
-
-(add-hook 'js2-mode-hook 'make-enter-indent)
-(add-hook 'python-mode-hook 'make-enter-indent)
-(add-hook 'html-mode-hook 'make-enter-indent)
-(add-hook 'org-mode-hook 'make-enter-indent)
-#+end_src
-
-** Copy/paste
-#+BEGIN_SRC emacs-lisp
-;; emacs 23.1 and later joins the system clipboard with the
-;; emacs killring. get rid of this.
-;; taken from: http://emacswiki.org/emacs/CopyAndPaste#toc10
-;; (setq interprogram-cut-function 'x-select-text)
-;; (setq interprogram-paste-function x-cut-buffer-or-selection-value)
-(setq interprogram-cut-function nil)
-(setq interprogram-paste-function nil)
-
-(defun paste-from-pasteboard ()
-  (interactive)
-  (insert (shell-command-to-string "pbpaste")))
-
-;; HT https://github.com/p-baleine/dot-emacs/blob/master/osx-clipboard.el
-(defun copy-to-pasteboard ()
-  (interactive)
-  (if (or (and (boundp 'mark-active) mark-active)
-          (and (fboundp 'region-exists-p) (region-exists-p)))
-      (call-process-region
-       (region-beginning) (region-end) "pbcopy" nil t t)))
-
-(global-set-key (kbd "s-v") 'paste-from-pasteboard)
-(global-set-key (kbd "s-c") 'copy-to-pasteboard)
-#+END_SRC
-
-** Autoindent yanked code
-Make sure pasted code is automatically indented, HT http://emacswiki.org/emacs/AutoIndentation
-#+begin_src emacs-lisp
-(dolist (command '(yank yank-pop))
-  (eval `(defadvice ,command (after indent-region activate)
-	   (and (not current-prefix-arg)
-		(member major-mode '(emacs-lisp-mode lisp-mode
-						     clojure-mode    scheme-mode
-						     haskell-mode    ruby-mode
-						     rspec-mode      python-mode
-						     c-mode          c++-mode
-						     objc-mode       latex-mode
-						     plain-tex-mode  js2-mode
-						     html-mode))
-		(let ((mark-even-if-inactive transient-mark-mode))
-		  (indent-region (region-beginning) (region-end) nil))))))
-#+end_src
-
-#+RESULTS:
-
-** Comments
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c C-=") 'comment-region)
-(global-set-key (kbd "C-c C--") 'uncomment-region)
-#+END_SRC
-
-** Next/previous window
-
-#+BEGIN_SRC emacs-lisp
-(defun prev-window ()
-  (interactive)
-  (other-window -1))
-
-(defun longs-next-window ()
-  (interactive)
-  (other-window 1))
-
-(global-set-key (kbd "C-x p") 'prev-window)
-(global-set-key (kbd "s-}") 'longs-next-window)
-(global-set-key (kbd "s-{") 'prev-window)
-#+END_SRC
-
-** windmove ("geographic" window switching)
-
-HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "<s-left>") 'windmove-left)
-(global-set-key (kbd "<s-right>") 'windmove-right)
-(global-set-key (kbd "<s-up>") 'windmove-up)
-(global-set-key (kbd "<s-down>") 'windmove-down)
-#+end_src
-
-** delete-window
-
-s-0 as a shorter version of C-x 0
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "s-0") 'delete-window)
-#+end_src
-
-** Go to indent
-Remap from default M-m to M-i
-HT http://emacsrocks.com/e04.html (around 1:15 in video)
-
-#+begin_src emacs-lisp
-(define-key global-map (kbd "M-i") 'back-to-indentation)
-#+end_src
-
-** M-m replace-string M-M replace-regexp
-#+begin_src emacs-lisp
-(global-set-key (kbd "M-m") 'replace-string)
-#+end_src
-
-#+begin_src emacs-lisp
-(global-set-key (kbd "M-M") 'replace-regexp)
-#+end_src
-
-** toggling window split
-
-HT http://www.emacswiki.org/emacs/ToggleWindowSplit
-#+BEGIN_SRC emacs-lisp
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
-
-(global-set-key (kbd "C-x 4") 'toggle-window-split)
-#+END_SRC
 * node repl
 
 HT http://www.emacswiki.org/emacs/NodeJs
