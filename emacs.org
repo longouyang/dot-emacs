@@ -687,6 +687,16 @@ C-x C-b occupies whole frame:
 (global-set-key "\C-x\C-b" 'buffer-menu)
 #+END_SRC
 
+** web-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package
+ web-mode
+ :mode (("\\.html$" . web-mode)
+        ("\\.jsx$" . web-mode))
+)
+#+END_SRC
+
 * Minor modes
 ** ace-jump-mode
 #+BEGIN_SRC emacs-lisp
