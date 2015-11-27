@@ -576,17 +576,17 @@ disable for now because it screws up some indentation for regular js
 : 2
 
 
-   #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'python-mode-hook
           (function (lambda ()
                       (setq indent-tabs-mode nil
                             tab-width 2
                             python-indent-offset 2 ;; HT http://www.emacswiki.org/emacs/IndentingPython
                             ))))
-   #+end_src
+#+end_src
 
-   #+RESULTS:
-   | er/add-python-mode-expansions | make-enter-indent | (lambda nil (setq indent-tabs-mode nil tab-width 2)) |
+#+RESULTS:
+| er/add-python-mode-expansions | make-enter-indent | (lambda nil (setq indent-tabs-mode nil tab-width 2)) |
 
 ** Markdown
 #+begin_src emacs-lisp
@@ -622,7 +622,7 @@ error in process filter: Wrong type argument: stringp, nil
 
 this is because /proc doesn't exist. i had to hack this in using lsof (HT http://stackoverflow.com/a/8331292/351392)
 
-2015/04/02: i had a suspicion that this was slow, so i optimized it a bit by storing pid as a local varaible and streamlining the string munging a bit
+2015/04/02: i had a suspicion that this was slow, so i optimized it a bit by storing pid as a local variable and streamlining the string munging a bit
 HT http://stackoverflow.com/a/8331292/351392 for the -a flag
 HT http://stackoverflow.com/a/3567515/351392 for the -F flag and the pipes afterwards
 
@@ -771,7 +771,7 @@ Use electric-pair-mode for non-lisps:
 #+BEGIN_SRC emacs-lisp
 (use-package sweetjs-mode
   :load-path "vendor/sweetjs-mode"
-  :mode "\\.sjs\\'")
+  :mode "\\.sjs$")
 #+END_SRC
 
 * Misc
@@ -943,14 +943,13 @@ HT http://www.emacswiki.org/emacs/NodeJs
 
 * todo setup
 
-  #+begin_src emacs-lisp
-    (defun tdo ()
-      (interactive)
+#+begin_src emacs-lisp
+(defun tdo ()
+  (interactive)
 
-    ;; HT http://www.gnu.org/software/emacs/manual/html_node/emacs/Select-Buffer.html
-      (switch-to-buffer-other-frame "todo"))
-
-  #+end_src
+  ;; HT http://www.gnu.org/software/emacs/manual/html_node/emacs/Select-Buffer.html
+  (switch-to-buffer-other-frame "todo"))
+#+end_src
 
 * lazy writing (capitalize heads of sentences)
 
