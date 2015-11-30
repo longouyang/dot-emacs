@@ -1068,9 +1068,9 @@ replace: \,(upcase \1)
   (set-face-attribute 'org-level-5 nil :foreground "#657b83")
   (set-face-attribute 'org-level-6 nil :foreground "#586e75")
   (set-face-attribute 'org-level-7 nil :foreground orange)
-  (set-face-attribute 'org-level-8 nil :foreground violet))
-
-
+  (set-face-attribute 'org-level-8 nil :foreground violet)
+  (set-face-attribute 'org-block nil :foreground "black")
+  )
 #+END_SRC
 
 
