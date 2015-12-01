@@ -2,6 +2,10 @@
 
 programmatically list installed packages here
 
+* 2015/12/01
+
+ace-jump-mode from melpa-stable
+
 * 2015/11/21: upgrade js2-mode to 20151116 from melpa
 * 2015/11/11: switch to haskell-mode 13.14 from melpa-stable
 * 2015/11/11: use-package 2.1 from melpa-stable
