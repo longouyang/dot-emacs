@@ -641,11 +641,11 @@ bind s-s to org-edit-src-save:
 
 ** Tuareg (OCaml)
 #+begin_src emacs-lisp
-;;; append-tuareg.el - Tuareg quick installation: Append this file to .emacs.
-(setq auto-mode-alist (cons '("\\.ocaml\\w?" . tuareg-mode) auto-mode-alist))
-(setq auto-mode-alist (cons '("\\.ml\\w?" . tuareg-mode) auto-mode-alist))
-(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
-(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+(use-package tuareg
+  :ensure
+  :mode (("\\.ml\\w?$" . tuareg-mode)
+         ("\\.ocaml\\w?" . tuareg-mode))
+  )
 #+end_src
 
 ** LaTeX
