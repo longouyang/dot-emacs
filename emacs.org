@@ -921,7 +921,7 @@ Use electric-pair-mode for non-lisps:
 (electric-pair-mode)
 #+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package smartparens-config
   :ensure smartparens
   :init
