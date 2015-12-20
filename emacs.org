@@ -4,6 +4,14 @@
 #+STARTUP: hidestars
 #+STARTUP: indent
 
+* TODO
+
+change font-lock-global-face to some brighter color (whatever it used to be)
+
+default coding system: utf8
+- see http://stackoverflow.com/questions/15977942/how-to-correct-files-with-mixed-encodings
+showing unicode
+
 * Load path
 
 The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/emacs/LoadPath
