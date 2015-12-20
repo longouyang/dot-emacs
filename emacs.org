@@ -863,6 +863,8 @@ C-x C-b occupies whole frame:
  web-mode
  :mode (("\\.html$" . web-mode)
         ("\\.jsx$" . web-mode))
+ :config
+ (setq web-mode-markup-indent-offset 2)
 )
 #+END_SRC
 
