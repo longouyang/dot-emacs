@@ -722,6 +722,11 @@ from melpa
 
 #+end_src
 
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "js2-mode"
+  '(set-face-attribute 'js2-external-variable nil :foreground "#cb4b16"))
+#+END_SRC
+
 *** jsx mode
 
 HT http://jbm.io/2014/01/react-in-emacs-creature-comforts/
