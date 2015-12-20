@@ -2,6 +2,7 @@
 
 programmatically list installed packages here
 
+* 2015/12/15: lua mode
 * 2015/12/01
 
 ace-jump-mode from melpa-stable
