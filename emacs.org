@@ -710,9 +710,12 @@ from melpa
   (setq js2-basic-offset 2)
 
   ;; read globals from .jsglobal
-  (let ((globals-file (concat (file-name-directory buffer-file-name) ".jsglobal")))
-    (when (file-exists-p globals-file)
-      (setq js2-additional-externs (read-lines globals-file))))
+  (add-hook 'js2-init-hook
+            (lambda ()
+              (let ((globals-file (concat (file-name-directory buffer-file-name) ".jsglobal")))
+                (when (file-exists-p globals-file)
+                  (setq js2-additional-externs (read-lines globals-file))
+                  ))))
 
   (add-hook 'js-mode-hook 'make-enter-indent)
 )
