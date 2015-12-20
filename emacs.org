@@ -8,10 +8,6 @@
 
 change font-lock-global-face to some brighter color (whatever it used to be)
 
-default coding system: utf8
-- see http://stackoverflow.com/questions/15977942/how-to-correct-files-with-mixed-encodings
-showing unicode
-
 * Load path
 
 The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/emacs/LoadPath
@@ -41,6 +37,13 @@ HT https://github.com/purcell/exec-path-from-shell
 Make C-x f use HOME as the default directory
 #+BEGIN_SRC emacs-lisp
 (setq default-directory (concat (getenv "HOME") "/"))
+#+END_SRC
+
+unicode characters weren't coming from pbpaste with the right encoding
+HT http://stackoverflow.com/a/24639415/351392
+
+#+BEGIN_SRC emacs-lisp
+(setenv "LANG" "en_US.UTF-8")
 #+END_SRC
 
 * Backups and autosaves
@@ -110,6 +113,20 @@ http://emacsredux.com/blog/2013/05/09/keep-backup-and-auto-save-files-out-of-the
 #+BEGIN_SRC emacs-lisp
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
+
+* encoding
+
+HT:
+http://www.emacswiki.org/emacs/UnicodeEncoding
+https://github.com/senny/cabbage/issues/42
+
+#+BEGIN_SRC emacs-lisp
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+#+END_SRC
+
+#+RESULTS:
 
 * Package management
 
