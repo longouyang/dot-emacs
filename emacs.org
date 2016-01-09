@@ -363,6 +363,15 @@ HT http://stackoverflow.com/a/16133543/351392
 (bind-key "s-b" 'buffer-menu)
 #+END_SRC
 
+** shortcut: insert today's date
+
+#+BEGIN_SRC emacs-lisp
+(defun insert-current-date () (interactive)
+       (insert (shell-command-to-string "echo -n $(date +%Y.%m.%d)")))
+
+(bind-key "s-d" 'insert-current-date)
+#+END_SRC
+
 * Search
 
 ** Auto wrap isearch
