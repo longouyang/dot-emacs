@@ -1251,3 +1251,9 @@ emacs -Q -l profile-dotemacs.el \
         (setq load-file-name \"init.el\"))" \
     -f profile-dotemacs
 #+END_SRC
+
+* learning
+
+mark:
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html#Mark-Ring
+http://emacs.stackexchange.com/questions/12952/what-is-the-usefulness-of-exchange-point-and-mark
