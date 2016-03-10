@@ -6,7 +6,20 @@
 
 * TODO
 
+custom project specific commands (e.g., build, watch)
+- projectile async in project root works for this
+  - it'd be nice if i get summarize this as a modeline indicator though
+
+do shell-current-directory-other-window in vertical split rather than horizontal split
+
 change font-lock-global-face to some brighter color (whatever it used to be)
+investigate js-jsx-mode
+
+projectile shell
+
+terminal prompt color stopped showing.. investigate ansi-term?
+
+bind s-o to try projectile find-file if we're in projectile mode, otherwise find-file
 
 * Load path
 
