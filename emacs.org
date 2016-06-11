@@ -6,6 +6,74 @@
 
 * TODO
 
+org-image-actual-width has no effect:
+https://lists.gnu.org/archive/html/emacs-orgmode/2014-08/msg00984.html
+
+2016/03/13:
+reading earlier parts of that thread more carefully, i discovered that emacs needs to be compiled with imagemagick for this to work
+and the prebuilt binary i use from emacsformacosx.com doesn't have this
+it looks like there is a version that builds with imagemagick at https://github.com/renard/emacs-build-macosx
+but in following those directions i ran into an obstacle with installing imagemagick from brew.. it said that i need to link ghostscript first but this would overwrite certain existing latex utilities:
+
+#+BEGIN_EXAMPLE
+mbp Desktop $ brew link --overwrite --dry-run ghostscript
+Would remove:
+/usr/local/bin/dvipdf
+/usr/local/bin/eps2eps
+/usr/local/bin/font2c
+/usr/local/bin/gs -> /usr/local/bin/gs-X11
+/usr/local/bin/gsbj
+/usr/local/bin/gsdj
+/usr/local/bin/gsdj500
+/usr/local/bin/gslj
+/usr/local/bin/gslp
+/usr/local/bin/gsnd
+/usr/local/bin/lprsetup.sh
+/usr/local/bin/pdf2dsc
+/usr/local/bin/pdf2ps
+/usr/local/bin/pf2afm
+/usr/local/bin/pfbtopfa
+/usr/local/bin/pphs
+/usr/local/bin/printafm
+/usr/local/bin/ps2ascii
+/usr/local/bin/ps2epsi
+/usr/local/bin/ps2pdf
+/usr/local/bin/ps2pdf12
+/usr/local/bin/ps2pdf13
+/usr/local/bin/ps2pdf14
+/usr/local/bin/ps2pdfwr
+/usr/local/bin/ps2ps
+/usr/local/bin/ps2ps2
+/usr/local/bin/unix-lpr.sh
+/usr/local/bin/wftopfa
+/usr/local/share/man/man1/dvipdf.1
+/usr/local/share/man/man1/eps2eps.1 -> /usr/local/share/man/man1/ps2ps.1
+/usr/local/share/man/man1/font2c.1
+/usr/local/share/man/man1/gs.1
+/usr/local/share/man/man1/gsbj.1 -> /usr/local/share/man/man1/gslp.1
+/usr/local/share/man/man1/gsdj.1 -> /usr/local/share/man/man1/gslp.1
+/usr/local/share/man/man1/gsdj500.1 -> /usr/local/share/man/man1/gslp.1
+/usr/local/share/man/man1/gslj.1 -> /usr/local/share/man/man1/gslp.1
+/usr/local/share/man/man1/gslp.1
+/usr/local/share/man/man1/gsnd.1
+/usr/local/share/man/man1/pdf2dsc.1
+/usr/local/share/man/man1/pdf2ps.1
+/usr/local/share/man/man1/pf2afm.1
+/usr/local/share/man/man1/pfbtopfa.1
+/usr/local/share/man/man1/printafm.1
+/usr/local/share/man/man1/ps2ascii.1
+/usr/local/share/man/man1/ps2epsi.1
+/usr/local/share/man/man1/ps2pdf.1
+/usr/local/share/man/man1/ps2pdf12.1 -> /usr/local/share/man/man1/ps2pdf.1
+/usr/local/share/man/man1/ps2pdf13.1 -> /usr/local/share/man/man1/ps2pdf.1
+/usr/local/share/man/man1/ps2pdf14.1 -> /usr/local/share/man/man1/ps2pdf.1
+/usr/local/share/man/man1/ps2pdfwr.1
+/usr/local/share/man/man1/ps2ps.1
+/usr/local/share/man/man1/wftopfa.1
+#+END_EXAMPLE
+
+i don't wanna screw up my tex situation so i think maybe i'll do the resizing command as part of my elisp function rather than using org-image-actual-width
+
 custom project specific commands (e.g., build, watch)
 - projectile async in project root works for this
   - it'd be nice if i get summarize this as a modeline indicator though
