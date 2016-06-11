@@ -1233,7 +1233,21 @@ Use electric-pair-mode for non-lisps:
   (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(ess-mode . origami-c-style-parser))
+  (add-to-list 'origami-parser-alist '(js-mode . origami-c-style-parser))
   (bind-key "s-;" 'origami-toggle-node origami-mode-map))
+(global-origami-mode)
+#+END_SRC
+
+(dev)
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/Code/origami")
+(require 'origami)
+(add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
+(add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
+(add-to-list 'origami-parser-alist '(ess-mode . origami-c-style-parser))
+(add-to-list 'origami-parser-alist '(js-mode . origami-c-style-parser))
+(bind-key "s-;" 'origami-toggle-node origami-mode-map)
+(global-origami-mode)
 #+END_SRC
 
 ** vimish-fold
