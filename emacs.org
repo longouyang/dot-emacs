@@ -685,7 +685,6 @@ end tell" url)))
 
 (add-hook 'org-mode-hook 'replace-org-export-as-html-and-open)
 #+END_SRC
-
 *** LaTeX
 
 Enable source-specials for Control-click forward/reverse search.
@@ -1119,7 +1118,7 @@ bind to f6
 #+END_SRC
 
 ** magit
-used to be vendored, but installed from elpa
+used to be vendored, but installed from melpa-stable
 
 Bind M-g to magit-status
 
@@ -1227,7 +1226,7 @@ Use electric-pair-mode for non-lisps:
 
 ** origami
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (use-package origami
   :defer t
   :config
