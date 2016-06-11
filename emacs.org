@@ -1095,6 +1095,17 @@ same directory as the org-buffer and insert a link to this file."
     (insert (concat "[[./" filename "]]"))))
 #+END_SRC
 
+bind to f6
+#+BEGIN_SRC emacs-lisp
+(defun org-mode-keys ()
+  "Modify keymaps used by `LaTeX-mode'."
+
+  ;; format a selection in a git-friendly manner (one line per paragraph)
+  (local-set-key (kbd "<f6>") 'my-org-screenshot))
+
+(add-hook 'org-mode-hook 'org-mode-keys)
+#+END_SRC
+
 * Minor modes
 ** ace-jump-mode
 #+BEGIN_SRC emacs-lisp
