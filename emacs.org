@@ -1358,6 +1358,13 @@ rm -rf .git/modules/vendor/submodule-name
 #+END_EXAMPLE
 
 
+
+* elisp development
+
+#+BEGIN_SRC emacs-lisp
+(require 'f)
+#+END_SRC
+
 * living with nightlies
 
 for synctex to work, we need a working emacsclient binary inside /usr/bin. we do this by:
