@@ -434,30 +434,6 @@ HT http://tuhdo.github.io/helm-intro.html
 #+RESULTS:
 : t
 
-** projectile
-
-HT http://tuhdo.github.io/helm-projectile.html
-
-#+BEGIN_SRC emacs-lisp
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-;;(helm-projectile-on)
-(define-key projectile-mode-map [?\s-g] 'projectile-grep)
-#+END_SRC
-
-when grepping, hide the header:
-
-HT http://stackoverflow.com/a/16133543/351392
-#+BEGIN_SRC emacs-lisp
-(defun delete-grep-header ()
-  (save-excursion
-    (with-current-buffer grep-last-buffer
-      (goto-line 5)
-      (narrow-to-region (point) (point-max)))))
-
-(defadvice grep (after delete-grep-header activate) (delete-grep-header))
-(defadvice rgrep (after delete-grep-header activate) (delete-grep-header))
-#+END_SRC
 
 ** s-e: eval-region
 
@@ -1265,6 +1241,37 @@ Use electric-pair-mode for non-lisps:
 (use-package sweetjs-mode
   :load-path "vendor/sweetjs-mode"
   :mode "\\.sjs$")
+#+END_SRC
+
+** projectile
+
+** projectile
+
+HT http://tuhdo.github.io/helm-projectile.html
+
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :init
+  (setq projectile-keymap-prefix (kbd "s-p"))
+  (setq projectile-completion-system 'helm)
+  :config
+  (projectile-global-mode)
+  (bind-key "s-p" 'projectile-grep)
+  (bind-key "s-o" 'projectile-find-file))
+#+END_SRC
+
+when grepping, hide the header:
+
+HT http://stackoverflow.com/a/16133543/351392
+#+BEGIN_SRC emacs-lisp
+(defun delete-grep-header ()
+  (save-excursion
+    (with-current-buffer grep-last-buffer
+      (goto-line 5)
+      (narrow-to-region (point) (point-max)))))
+
+(defadvice grep (after delete-grep-header activate) (delete-grep-header))
+(defadvice rgrep (after delete-grep-header activate) (delete-grep-header))
 #+END_SRC
 
 * node repl
