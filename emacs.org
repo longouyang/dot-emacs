@@ -1157,7 +1157,7 @@ Bind M-g to magit-status
 #+RESULTS:
 
 Use electric-pair-mode for non-lisps:
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 ;; HT http://stackoverflow.com/a/913823/351392
 ;; HT http://stackoverflow.com/questions/5298907/emacs-php-mode-and-paredit#comment12995031_5324458
 
