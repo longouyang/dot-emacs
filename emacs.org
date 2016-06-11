@@ -1226,7 +1226,7 @@ Use electric-pair-mode for non-lisps:
 
 ** vimish-fold
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (add-hook 'vimish-fold-mode-hook
           (lambda ()
             (interactive)
