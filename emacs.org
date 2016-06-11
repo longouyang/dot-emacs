@@ -373,7 +373,7 @@ HT http://www.emacswiki.org/emacs/ToggleWindowSplit
 	  (select-window first-win)
 	  (if this-win-2nd (other-window 1))))))
 
-(global-set-key (kbd "C-x 4") 'toggle-window-split)
+(bind-key "<f5>" 'toggle-window-split)
 #+END_SRC
 
 ** helm
