@@ -4,9 +4,10 @@
 #+STARTUP: hidestars
 #+STARTUP: indent
 
-* TODO
 
-org-image-actual-width has no effect:
+* learning
+
+** documenting why org-image-actual-width has no effect
 https://lists.gnu.org/archive/html/emacs-orgmode/2014-08/msg00984.html
 
 2016/03/13:
@@ -73,21 +74,19 @@ Would remove:
 #+END_EXAMPLE
 
 i don't wanna screw up my tex situation so i think maybe i'll do the resizing command as part of my elisp function rather than using org-image-actual-width
+* TODO
 
 custom project specific commands (e.g., build, watch)
 - projectile async in project root works for this
   - it'd be nice if i get summarize this as a modeline indicator though
 
 do shell-current-directory-other-window in vertical split rather than horizontal split
+- or, dwim ("do what i mean") organization of windows
 
 change font-lock-global-face to some brighter color (whatever it used to be)
 investigate js-jsx-mode
 
-projectile shell
-
 terminal prompt color stopped showing.. investigate ansi-term?
-
-bind s-o to try projectile find-file if we're in projectile mode, otherwise find-file
 
 * Load path
 
