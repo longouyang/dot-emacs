@@ -222,6 +222,12 @@ https://github.com/senny/cabbage/issues/42
 #+END_SRC
 
 * Keyboard
+** m-r: rename buffer
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-r") 'rename-buffer)
+#+END_SRC
+
 ** Enter indents
 
 HT http://emacswiki.org/emacs/AutoIndentation
