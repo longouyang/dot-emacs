@@ -822,9 +822,11 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 bind s-s to org-edit-src-save:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'org-src-mode-hook (lambda ()
-                               (local-set-key (kbd "s-s") 'org-edit-src-save)))
+;; (add-hook 'org-src-mode-hook (lambda ()
+;;                                (local-set-key (kbd "s-s") 'org-edit-src-save)))
+;; ^^^ i think this bleeds into other modes when i exit the org src editor and open another file in the same window
 #+END_SRC
+
 ** Church
 #+BEGIN_SRC emacs-lisp
 (require 'church)
