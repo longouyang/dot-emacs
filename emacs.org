@@ -980,25 +980,25 @@ disable for now because it screws up some indentation for regular js
 
 ** Markdown
 #+begin_src emacs-lisp
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "~/Libary/Haskell/bin/pandoc")
+  (setq markdown-css-paths '("file:///Users/long/dot-emacs/markdown.css"))
+  )
 #+end_src
 
-I'm apparently using the markdown parser from Ruby's gems, which doesn't play nice with markdown previews / exports.
-#+begin_src emacs-lisp
-(custom-set-variables '(markdown-command "~/Library/Haskell/bin/pandoc"))
-;;(custom-set-variables '(markdown-command "redcarpet"))
-#+end_src
+*** polymode
 
-Use a css file in ~/dot-emacs/markdown.css
-#+begin_src emacs-lisp
-(custom-set-variables '(markdown-css-path "file:///Users/long/dot-emacs/markdown.css"))
-#+end_src
+#+BEGIN_SRC emacs-lisp
+(require 'poly-R)
+(require 'poly-markdown)
+#+END_SRC
 
-#+RESULTS:
 
 ** shell
 *** directory tracking (so autocomplete works even after I use z to jump around)
