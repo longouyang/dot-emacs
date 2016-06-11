@@ -319,6 +319,26 @@ HT http://www.emacswiki.org/emacs/SwitchingBuffers#toc8
 (global-set-key (kbd "<s-down>") 'windmove-down)
 #+end_src
 
+** window resizing
+
+TODO: make keybindings more intuitive
+
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-M-s-<left>" 'shrink-window-horizontally)
+(bind-key "C-M-s-<right>" 'enlarge-window-horizontally)
+(bind-key "C-M-s-<down>" 'shrink-window)
+(bind-key "C-M-s-<up>" 'enlarge-window)
+#+END_SRC
+
+#+RESULTS:
+: enlarge-window
+
+** prevent (automatically) splitting a window horizontally
+
+#+BEGIN_SRC emacs-lisp
+(setq split-height-threshold nil)
+#+END_SRC
+
 ** delete-window
 
 s-0 as a shorter version of C-x 0
