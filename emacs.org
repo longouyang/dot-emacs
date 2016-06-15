@@ -443,7 +443,7 @@ HT http://tuhdo.github.io/helm-intro.html
 ** s-b: switch buffer
 
 #+BEGIN_SRC emacs-lisp
-(bind-key "s-b" 'buffer-menu)
+(bind-key "s-b" 'switch-to-buffer)
 #+END_SRC
 
 ** shortcut: insert today's date
