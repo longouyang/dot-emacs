@@ -1281,7 +1281,7 @@ HT http://tuhdo.github.io/helm-projectile.html
   (setq projectile-completion-system 'helm)
   :config
   (projectile-global-mode)
-  (bind-key "s-p" 'projectile-grep)
+  (bind-key "s-g" 'projectile-grep)
   (bind-key "s-o" 'projectile-find-file))
 #+END_SRC
 
