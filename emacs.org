@@ -917,7 +917,7 @@ from melpa
 
 #+BEGIN_SRC emacs-lisp
 (eval-after-load "js2-mode"
-  '(set-face-attribute 'js2-external-variable nil :foreground "#cb4b16"))
+  '(set-face-attribute 'js2-external-variable nil :foreground "IndianRed1"))
 #+END_SRC
 
 *** jsx mode
