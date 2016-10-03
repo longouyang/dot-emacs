@@ -897,6 +897,13 @@ bind to M-n
 
 from melpa
 
+load tern
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/dot-emacs/vendor/tern/emacs/")
+(autoload 'tern-mode "tern.el" nil t)
+#+END_SRC
+
 #+begin_src emacs-lisp
 (use-package js2-mode
   :mode (("\\.js$" . js2-mode)
@@ -920,6 +927,8 @@ from melpa
                   ))))
 
   (add-hook 'js-mode-hook 'make-enter-indent)
+
+  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 )
 
 #+end_src
