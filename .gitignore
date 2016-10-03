@@ -5,3 +5,4 @@ auto-save-list/*
 emacs.el
 url
 vimish-fold
+projectile*
