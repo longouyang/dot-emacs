@@ -891,7 +891,7 @@ bind to M-n
  'LaTeX-mode-hook
  (lambda ()
    (linum-mode)
-   (set-variable 'linum-format "•")))
+   (set-variable 'linum-format "·")))
 #+END_SRC
 ** js2
 
