@@ -539,11 +539,11 @@ http://stackoverflow.com/a/15595000/351392
   (mapc #'disable-theme custom-enabled-themes))
 #+END_SRC
 
-** Use Inconsolata font
+** Use SF Mono font
 #+BEGIN_SRC emacs-lisp
-(when (member "Inconsolata" (font-family-list))
-	    (set-default-font "Inconsolata")
-	    (set-face-attribute 'default nil :font "Inconsolata" :height 140))
+(when (member "SF Mono" (font-family-list))
+	    (set-default-font "SF Mono")
+	    (set-face-attribute 'default nil :font "SF Mono" :height 120))
 #+END_SRC
 
 ** Colors in shell mode
