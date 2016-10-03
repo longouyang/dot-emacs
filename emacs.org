@@ -910,6 +910,12 @@ load tern
          ("\\.wppl$" . js2-mode))
   :interpreter ("node" . js2-mode)
 
+  :init
+  (use-package tern
+            :commands (tern-mode)
+            :init (progn
+                    (add-hook 'js-mode-hook 'tern-mode)))
+
   :config
 
   ;; allow missing semicolons
@@ -927,8 +933,6 @@ load tern
                   ))))
 
   (add-hook 'js-mode-hook 'make-enter-indent)
-
-  (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 )
 
 #+end_src
