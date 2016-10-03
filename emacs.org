@@ -455,6 +455,15 @@ HT http://tuhdo.github.io/helm-intro.html
 (bind-key "s-d" 'insert-current-date)
 #+END_SRC
 
+
+** s-2 and s-3 as shortcuts for split-window-below and split-window-right
+
+#+BEGIN_SRC emacs-lisp
+(bind-key "s-2" 'split-window-below)
+(bind-key "s-3" 'split-window-right)
+#+END_SRC
+
+
 * Search
 
 ** Auto wrap isearch
