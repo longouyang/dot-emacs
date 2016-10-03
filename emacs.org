@@ -503,7 +503,7 @@ Disabling scroll bars w/o custom-set-variable: http://emacswiki.org/emacs/Scroll
 HT http://emacsredux.com/blog/2014/07/25/configure-the-scratch-buffers-mode/
 
 #+BEGIN_SRC emacs-lisp
-;; (setq initial-major-mode 'org-mode)
+(setq initial-major-mode 'text-mode)
 (setq initial-scratch-message "")
 #+END_SRC
 
