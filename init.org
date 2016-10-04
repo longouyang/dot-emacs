@@ -1351,6 +1351,9 @@ replace: \,(upcase \1)
 * custom face setting
 
 #+BEGIN_SRC emacs-lisp
+;; highlight ps prompt in shell, HT http://stackoverflow.com/a/25826132/351392
+(set-face-attribute 'comint-highlight-prompt nil :inherit nil)
+
 (set-face-background 'show-paren-match "#99ccff")
 (set-face-background 'org-block "#eee8d5")
 
