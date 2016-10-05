@@ -4,3 +4,6 @@
 [submodule "vendor/sweetjs-mode"]
 	path = vendor/sweetjs-mode
 	url = git@github.com:disnet/sweetjs-mode.git
+[submodule "vendor/tern"]
+	path = vendor/tern
+	url = https://github.com/ternjs/tern.git
