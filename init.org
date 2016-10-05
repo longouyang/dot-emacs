@@ -98,6 +98,12 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 (add-to-list 'load-path "~/dot-emacs/")
 #+END_SRC
 
+* use gls
+
+#+BEGIN_SRC emacs-lisp
+(setq insert-directory-program "/usr/local/bin/gls")
+#+END_SRC
+
 * Copy important environment variables from my shell into emacs exec-path
 
 HT https://github.com/purcell/exec-path-from-shell
