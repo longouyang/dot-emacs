@@ -830,6 +830,12 @@ TODO: only run org-display-inline-images after execution if STARTUP: inlineimage
 (add-hook 'org-mode-hook 'org-display-inline-images)
 #+end_src
 
+*** image width
+
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width 500)
+#+END_SRC
+
 *** org-src
 
 bind s-s to org-edit-src-save:
