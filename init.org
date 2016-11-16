@@ -711,7 +711,7 @@ Enable source-specials for Control-click forward/reverse search.
    (setq TeX-source-correlate-method 'synctex)
    (setq TeX-view-program-list
          '(("Skim"
-            "$HOME/bin/displayline -g %n %o %b"))
+            "/Applications/Skim.app/Contents/SharedSupport/displayline -g %n %o %b"))
          TeX-view-program-selection
          '((output-pdf "Skim")))))
 #+END_SRC
