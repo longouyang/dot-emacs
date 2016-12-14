@@ -1260,7 +1260,7 @@ Use electric-pair-mode for non-lisps:
 
 ** origami
 
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (use-package origami
   :defer t
   :config
@@ -1273,7 +1273,7 @@ Use electric-pair-mode for non-lisps:
 #+END_SRC
 
 (dev)
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (add-to-list 'load-path "~/Code/origami")
 (require 'origami)
 (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
