@@ -1270,6 +1270,11 @@ Use electric-pair-mode for non-lisps:
   (add-to-list 'origami-parser-alist '(js-mode . origami-c-style-parser))
   (bind-key "s-;" 'origami-toggle-node origami-mode-map))
 (global-origami-mode)
+
+(setq origami-fold-replacement " ... ")
+
+(set-face-background 'origami-fold-replacement-face "#deb887")
+(set-face-foreground 'origami-fold-replacement-face "#000000")
 #+END_SRC
 
 (dev)
