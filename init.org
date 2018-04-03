@@ -1378,30 +1378,30 @@ replace: \,(upcase \1)
 (set-face-attribute 'org-block-begin-line nil :underline t)
 (set-face-attribute 'org-block-end-line nil :overline t :underline nil)
 
-;; use old org mode line headers
-;; TODO: figure out how to get color defs from solarized
-;; rather than manually listing them here
-(let ((yellow    "#b58900")
-      (orange    "#cb4b16")
-      (red       "#dc322f")
-      (magenta   "#d33682")
-      (violet    "#6c71c4")
-      (blue      "#268bd2")
-      (cyan      "#2aa198")
-      (green     "#859900"))
-  (set-face-attribute 'org-level-1 nil :foreground blue)
-  (set-face-attribute 'org-level-2 nil :foreground cyan)
-  (set-face-attribute 'org-level-3 nil :foreground yellow)
-  (set-face-attribute 'org-level-4 nil :foreground red)
-  (set-face-attribute 'org-level-5 nil :foreground "#657b83")
-  (set-face-attribute 'org-level-6 nil :foreground "#586e75")
-  (set-face-attribute 'org-level-7 nil :foreground orange)
-  (set-face-attribute 'org-level-8 nil :foreground violet)
-  (set-face-attribute 'org-block nil :foreground "black")
-  )
+(set-face-background 'error "#cb4b16")
+(set-face-foreground 'error "#ffffff")
+
+;; HT https://github.com/bbatsov/solarized-emacs/pull/198
+(solarized-with-color-variables 'light
+  (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
+  (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
+  (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
+  (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
+  (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
+  (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
+  (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
+  (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
+)
 #+END_SRC
 
-
+* test1
+** test2
+*** test3
+**** test4
+***** test5
+****** test6
+******* test7
+******** test8
 * how to remove submodules
 
 
