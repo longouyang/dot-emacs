@@ -884,8 +884,10 @@ bind to M-n
   (local-set-key (kbd "M-n") 'tex-git-friendly)
   ;; shortcut for bold
   (local-set-key (kbd "s-b") (lambda ()  (interactive) (TeX-font nil ?\C-b)))
-  ;; shortcut for italic italic
+  ;; shortcut for italic
   (local-set-key (kbd "s-i") (lambda ()  (interactive) (TeX-font nil ?\C-e)))
+  ;; shortcut for typewriter
+  (local-set-key (kbd "s-t") (lambda ()  (interactive) (TeX-font nil ?\C-t)))
   )
 
 (add-hook 'LaTeX-mode-hook 'LaTeX-mode-keys)
