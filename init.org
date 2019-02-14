@@ -1,9 +1,10 @@
 #+TITLE: Literate .emacs
 #+AUTHOR: Long Ouyang
-#+PROPERTY: tangle yes
+#+PROPERTY: header-args :results silent :tangle yes
 #+STARTUP: hidestars
 #+STARTUP: indent
-
+#+emacs-version:26.1
+#+org-version:9
 
 * learning
 
@@ -608,7 +609,7 @@ FIXME
   )
 
 #+END_SRC
-** org
+** org mode
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
@@ -626,7 +627,7 @@ FIXME
  '(;;(R . t)
    (emacs-lisp . t)
    (ruby . t)
-   (sh . t)
+   (shell . t)
    (python .t)
    (scheme . t)
    ))
@@ -634,7 +635,12 @@ FIXME
 (setq org-src-fontify-natively t)
 (setq org-src-window-setup (quote current-window))
 (setq org-confirm-babel-evaluate nil)
+
+(add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
+(require 'org-drill)
+(require 'org-tempo) ;; https://emacs.stackexchange.com/questions/40571/how-to-set-a-short-cut-for-begin-src-end-src#comment72314_40576
 #+END_SRC
+
 *** Open URLs in Chrome
 #+BEGIN_SRC emacs-lisp
 (defun open-url-in-chrome (url)
