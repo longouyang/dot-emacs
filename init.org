@@ -641,6 +641,60 @@ FIXME
 (require 'org-tempo) ;; https://emacs.stackexchange.com/questions/40571/how-to-set-a-short-cut-for-begin-src-end-src#comment72314_40576
 #+END_SRC
 
+TODO: 2019.02.18 this doesn't work perfectly.
+i need to manually an org-capture first before the keyboard shortcut works.
+i also don't know why org-capture-get just does the right thing -- possibly it's because i only have one capture template?
+
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      '(("d" "org-drill card" entry (file "~/anki.org")
+         "* %?:drill:\n# created %T\n** answer\n")))
+
+(defun org-drill-insert-card ()
+  "Insert the capture template at point."
+  (let* ((template (org-capture-get :template))
+	       (type  'entry)
+	 beg end pp)
+   (unless (bolp) (insert "\n"))
+    (setq beg (point))
+    (cond
+     ((and (eq type 'entry) (derived-mode-p 'org-mode))
+      (org-capture-verify-tree (org-capture-get :template))
+      (org-paste-subtree nil template t))
+     ((and (memq type '(item checkitem))
+	   (derived-mode-p 'org-mode)
+	   (save-excursion (skip-chars-backward " \t\n")
+			   (setq pp (point))
+			   (org-in-item-p)))
+      (goto-char pp)
+      (org-insert-item)
+      (skip-chars-backward " ")
+      (skip-chars-backward "-+*0123456789).")
+      (delete-region (point) (point-at-eol))
+      (setq beg (point))
+      (org-remove-indentation template)
+      (insert template)
+      (org-capture-empty-lines-after)
+      (goto-char beg)
+      (org-list-repair)
+      (org-end-of-item))
+     (t
+      (insert template)
+      (org-capture-empty-lines-after)
+      (skip-chars-forward " \t\n")
+      (unless (eobp) (beginning-of-line))))
+    (setq end (point))
+    (goto-char beg)
+    (when (re-search-forward "%\\?" end t)
+      (replace-match ""))))
+
+(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "s-=")
+                                                   (lambda () (interactive) (org-drill-insert-card)))))
+#+END_SRC
+
+
+
+
 *** Open URLs in Chrome
 #+BEGIN_SRC emacs-lisp
 (defun open-url-in-chrome (url)
