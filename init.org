@@ -624,7 +624,7 @@ FIXME
 ;; src block languages
 (org-babel-do-load-languages
  'org-babel-load-languages
- '(;;(R . t)
+ '((R . t)
    (emacs-lisp . t)
    (ruby . t)
    (shell . t)
