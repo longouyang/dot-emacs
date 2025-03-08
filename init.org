@@ -1,9 +1,9 @@
-#+TITLE: Literate .emacs
+l#+TITLE: Literate .emacs
 #+AUTHOR: Long Ouyang
-#+PROPERTY: header-args :results silent :tangle yes
+#+PROPERTY: header-args :results silent :tangle init.el
 #+STARTUP: hidestars
 #+STARTUP: indent
-#+emacs-version:26.1
+#+emacs-version:26.2
 #+org-version:9
 
 * learning
@@ -104,6 +104,19 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 #+BEGIN_SRC emacs-lisp
 (setq insert-directory-program "/usr/local/bin/gls")
 #+END_SRC
+
+* Package management
+
+#+BEGIN_SRC emacs-lisp
+(require 'url-handlers) ;; HT https://lists.gnu.org/archive/html/emacs-devel/2015-11/msg01546.html
+(require 'package)
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+(package-initialize)
+#+END_SRC
+
 
 * Copy important environment variables from my shell into emacs exec-path
 
@@ -215,17 +228,6 @@ https://github.com/senny/cabbage/issues/42
 
 #+RESULTS:
 
-* Package management
-
-#+BEGIN_SRC emacs-lisp
-(require 'url-handlers) ;; HT https://lists.gnu.org/archive/html/emacs-devel/2015-11/msg01546.html
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
-#+END_SRC
 
 * Keyboard
 ** m-r: rename buffer
@@ -406,6 +408,8 @@ HT http://www.emacswiki.org/emacs/ToggleWindowSplit
 
 HT http://tuhdo.github.io/helm-intro.html
 
+TODO: switch to use-package
+
 #+BEGIN_SRC emacs-lisp
 
 (require 'helm)
@@ -524,6 +528,8 @@ for solarized colors to look right in terminal
 ;;(load-theme 'solarized-light t)
 
 (use-package solarized-theme
+  :ensure t
+  :pin melpa
   :if window-system
   :init
   (setq solarized-use-variable-pitch nil
@@ -535,7 +541,7 @@ for solarized colors to look right in terminal
         )
   :config
   (load "solarized-theme-autoloads" nil t)
-  (load-theme 'solarized-light t))
+  (load-theme 'solarized-dark t))
 #+END_SRC
 
 disable theme before switching using =load-theme=
@@ -565,8 +571,9 @@ FIXME
 
 #+begin_src emacs-lisp
 (use-package expand-region
-  :config
-  (bind-key  "C-." 'er/expand-region))
+  :ensure t
+  :pin melpa-stable
+  :bind  ("C-." . er/expand-region))
 #+end_src
 
 * yasnippet
@@ -583,8 +590,14 @@ FIXME
 (installed from melpa)
 
 #+BEGIN_SRC emacs-lisp
-(require 'htmlize)
-(use-package ess-site
+(use-package htmlize
+  :ensure t
+  :pin melpa-stable)
+
+
+(use-package ess
+  :ensure t
+  :pin melpa-stable
   :mode ("\\.R\\'" . R-mode)
   :config
   (ess-toggle-underscore nil)
@@ -606,10 +619,12 @@ FIXME
 
   ;; use rstudio style
   (setq ess-default-style 'RStudio)
+  :init (require 'ess-site)
   )
-
 #+END_SRC
 ** org mode
+
+org-drill stuff requires org-plus-contrib package
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
@@ -630,6 +645,7 @@ FIXME
    (shell . t)
    (python .t)
    (scheme . t)
+   (jupyter . t)
    ))
 
 (setq org-src-fontify-natively t)
@@ -648,7 +664,14 @@ i also don't know why org-capture-get just does the right thing -- possibly it's
 #+begin_src emacs-lisp
 (setq org-capture-templates
       '(("d" "org-drill card" entry (file "~/anki.org")
-         "* %?:drill:\n# created %T\n** answer\n")))
+         "* %?:drill:\n# created %T\n** answer\n")
+        ;; ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+        ;;  "* TODO %?\n  %i\n  %a")
+        ("t" "Todo" entry (file "~/org/todo.org") "* TODO %?\n%U" :empty-lines 1)
+        ("j" "Journal" entry (file+datetree "~/org/journal.org")
+         "* %?\nEntered on %U\n  %i\n  %a")
+        )
+      )
 
 (defun org-drill-insert-card ()
   "Insert the capture template at point."
@@ -1069,8 +1092,20 @@ disable for now because it screws up some indentation for regular js
 *** polymode
 
 #+BEGIN_SRC emacs-lisp
-(require 'poly-R)
-(require 'poly-markdown)
+(use-package polymode
+  :ensure t
+  :pin melpa)
+
+(use-package poly-R
+  :ensure t
+  :pin melpa
+  )
+
+(use-package poly-markdown
+  :ensure t
+  :pin melpa
+  )
+
 #+END_SRC
 
 
@@ -1107,7 +1142,10 @@ HT http://stackoverflow.com/a/3567515/351392 for the -F flag and the pipes after
 loading shell based on current buffer's directory (melpa, i think)
 
 #+BEGIN_SRC emacs-lisp
-(require 'shell-current-directory)
+(use-package shell-current-directory
+  :ensure t
+  :pin melpa
+  )
 #+END_SRC
 
 *** make node work by setting NODE_NO_READLINE
@@ -1205,12 +1243,13 @@ bind to f6
 ** ace-jump-mode
 #+BEGIN_SRC emacs-lisp
 (use-package ace-jump-mode
+  :ensure t
+  :pin melpa-stable
   :config
   (ace-jump-mode-enable-mark-sync)
   (key-chord-define-global "jk" 'ace-jump-mode)
-  (key-chord-define-global "kp" 'ace-jump-mode-pop-mark)
-  (setq ace-jump-mode-scope 'frame)
-)
+  (key-chord-define-global "kq" 'ace-jump-mode-pop-mark)
+  (setq ace-jump-mode-scope 'frame))
 #+END_SRC
 
 ** magit
@@ -1257,6 +1296,17 @@ Use electric-pair-mode for non-lisps:
 ;; HT http://stackoverflow.com/questions/5298907/emacs-php-mode-and-paredit#comment12995031_5324458
 
 (electric-pair-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+;; disable <> auto pairing in electric-pair-mode for org-mode
+;; https://www.topbug.net/blog/2016/09/29/emacs-disable-certain-pairs-for-electric-pair-mode/
+(add-hook
+ 'org-mode-hook
+ (lambda ()
+   (setq-local electric-pair-inhibit-predicate
+               `(lambda (c)
+                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -1324,19 +1374,26 @@ Use electric-pair-mode for non-lisps:
 
 #+BEGIN_SRC emacs-lisp
 (use-package origami
+  :ensure t
+  :pin melpa
   :defer t
   :config
   (add-to-list 'origami-parser-alist '(css-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(latex-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(ess-mode . origami-c-style-parser))
   (add-to-list 'origami-parser-alist '(js-mode . origami-c-style-parser))
-  (bind-key "s-;" 'origami-toggle-node origami-mode-map))
-(global-origami-mode)
+  (bind-key "s-;" 'origami-toggle-node origami-mode-map)
+  (global-origami-mode)
 
-(setq origami-fold-replacement " ... ")
+  (setq origami-fold-replacement " ... ")
 
-(set-face-background 'origami-fold-replacement-face "#deb887")
-(set-face-foreground 'origami-fold-replacement-face "#000000")
+  (set-face-background 'origami-fold-replacement-face "#deb887")
+  (set-face-foreground 'origami-fold-replacement-face "#000000")
+
+
+  )
+
+
 #+END_SRC
 
 (dev)
@@ -1376,6 +1433,8 @@ HT http://tuhdo.github.io/helm-projectile.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package projectile
+  :ensure t
+  :pin melpa-stable
   :init
   (setq projectile-keymap-prefix (kbd "s-p"))
   (setq projectile-completion-system 'helm)
@@ -1435,7 +1494,8 @@ replace: \,(upcase \1)
 (set-face-attribute 'comint-highlight-prompt nil :inherit nil)
 
 (set-face-background 'show-paren-match "#99ccff")
-(set-face-background 'org-block "#eee8d5")
+;(set-face-background 'org-block "#eee8d5")
+(set-face-background 'org-block (face-background 'default))
 
 (set-face-attribute 'org-block-begin-line nil :underline t)
 (set-face-attribute 'org-block-end-line nil :overline t :underline nil)
@@ -1445,6 +1505,17 @@ replace: \,(upcase \1)
 
 ;; HT https://github.com/bbatsov/solarized-emacs/pull/198
 (solarized-with-color-variables 'light
+  (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
+  (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
+  (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
+  (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
+  (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
+  (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
+  (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
+  (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
+)
+
+(solarized-with-color-variables 'dark
   (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
   (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
   (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
@@ -1478,7 +1549,9 @@ rm -rf .git/modules/vendor/submodule-name
 * elisp development
 
 #+BEGIN_SRC emacs-lisp
-(require 'f)
+(use-package f
+  :ensure t
+  :pin melpa)
 #+END_SRC
 
 * living with nightlies
@@ -1507,3 +1580,8 @@ emacs -Q -l profile-dotemacs.el \
 mark:
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Mark-Ring.html#Mark-Ring
 http://emacs.stackexchange.com/questions/12952/what-is-the-usefulness-of-exchange-point-and-mark
+* test
+
+#+begin_example
+
+#+end_example
