@@ -1,4 +1,4 @@
-l#+TITLE: Literate .emacs
+#+TITLE: Literate .emacs
 #+AUTHOR: Long Ouyang
 #+PROPERTY: header-args :results silent :tangle init.el
 #+STARTUP: hidestars
@@ -108,13 +108,14 @@ The normal-top-level-add-subdirs-to-load-path bit is HT http://emacswiki.org/ema
 * Package management
 
 #+BEGIN_SRC emacs-lisp
-(require 'url-handlers) ;; HT https://lists.gnu.org/archive/html/emacs-devel/2015-11/msg01546.html
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
-(package-initialize)
+  (require 'url-handlers) ;; HT https://lists.gnu.org/archive/html/emacs-devel/2015-11/msg01546.html
+  (require 'package)
+  (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/") t)
+  ;(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (package-initialize)
 #+END_SRC
 
 
@@ -408,37 +409,37 @@ HT http://www.emacswiki.org/emacs/ToggleWindowSplit
 
 HT http://tuhdo.github.io/helm-intro.html
 
-TODO: switch to use-package
+TODO: switch to use-package and figure out if i need helm-config these days
 
 #+BEGIN_SRC emacs-lisp
 
-(require 'helm)
-(require 'helm-config)
+  ;; (require 'helm)
+  ;; (require 'helm-config)
 
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-unset-key (kbd "C-x c"))
+  ;; (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  ;; (global-unset-key (kbd "C-x c"))
 
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
+  ;; (when (executable-find "curl")
+  ;;   (setq helm-google-suggest-use-curl-p t))
 
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+  ;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
 
-;; disable prompt for creating new files
-;; HT http://emacs.stackexchange.com/a/10918/3964
-(setq helm-ff-newfile-prompt-p nil)
+  ;; ;; disable prompt for creating new files
+  ;; ;; HT http://emacs.stackexchange.com/a/10918/3964
+  ;; (setq helm-ff-newfile-prompt-p nil)
 
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      ;;helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      ;;helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      ;;helm-ff-file-name-history-use-recentf t
-      )
+  ;; (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+  ;;       ;;helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+  ;;       ;;helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+  ;;       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+  ;;       ;;helm-ff-file-name-history-use-recentf t
+  ;;       )
 
-(helm-mode 1)
+  ;; (helm-mode 1)
 #+END_SRC
 
 #+RESULTS:
@@ -541,7 +542,7 @@ for solarized colors to look right in terminal
         )
   :config
   (load "solarized-theme-autoloads" nil t)
-  (load-theme 'solarized-dark t))
+  (load-theme 'solarized-light t))
 #+END_SRC
 
 disable theme before switching using =load-theme=
@@ -600,7 +601,7 @@ FIXME
   :pin melpa-stable
   :mode ("\\.R\\'" . R-mode)
   :config
-  (ess-toggle-underscore nil)
+  ; (ess-toggle-underscore nil) ; TODO(25-03-08): get this working again on a fresh machine
   (bind-key "s-r" 'ess-eval-buffer-and-go ess-mode-map)
   (add-hook 'inferior-ess-mode-hook (lambda ()
                                       (progn
@@ -645,7 +646,7 @@ org-drill stuff requires org-plus-contrib package
    (shell . t)
    (python .t)
    (scheme . t)
-   (jupyter . t)
+   ; (jupyter . t)
    ))
 
 (setq org-src-fontify-natively t)
@@ -653,8 +654,8 @@ org-drill stuff requires org-plus-contrib package
 (setq org-confirm-babel-evaluate nil)
 
 (add-hook 'org-mode-hook (lambda () (setq line-spacing 0.3)))
-(require 'org-drill)
-(require 'org-tempo) ;; https://emacs.stackexchange.com/questions/40571/how-to-set-a-short-cut-for-begin-src-end-src#comment72314_40576
+;(require 'org-drill)
+;(require 'org-tempo) ;; https://emacs.stackexchange.com/questions/40571/how-to-set-a-short-cut-for-begin-src-end-src#comment72314_40576
 #+END_SRC
 
 TODO: 2019.02.18 this doesn't work perfectly.
@@ -662,57 +663,57 @@ i need to manually an org-capture first before the keyboard shortcut works.
 i also don't know why org-capture-get just does the right thing -- possibly it's because i only have one capture template?
 
 #+begin_src emacs-lisp
-(setq org-capture-templates
-      '(("d" "org-drill card" entry (file "~/anki.org")
-         "* %?:drill:\n# created %T\n** answer\n")
-        ;; ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
-        ;;  "* TODO %?\n  %i\n  %a")
-        ("t" "Todo" entry (file "~/org/todo.org") "* TODO %?\n%U" :empty-lines 1)
-        ("j" "Journal" entry (file+datetree "~/org/journal.org")
-         "* %?\nEntered on %U\n  %i\n  %a")
-        )
-      )
+;; (setq org-capture-templates
+;;       '(("d" "org-drill card" entry (file "~/anki.org")
+;;          "* %?:drill:\n# created %T\n** answer\n")
+;;         ;; ("t" "Todo" entry (file+headline "~/org/todo.org" "Tasks")
+;;         ;;  "* TODO %?\n  %i\n  %a")
+;;         ("t" "Todo" entry (file "~/org/todo.org") "* TODO %?\n%U" :empty-lines 1)
+;;         ("j" "Journal" entry (file+datetree "~/org/journal.org")
+;;          "* %?\nEntered on %U\n  %i\n  %a")
+;;         )
+;;       )
 
-(defun org-drill-insert-card ()
-  "Insert the capture template at point."
-  (let* ((template (org-capture-get :template))
-	       (type  'entry)
-	 beg end pp)
-   (unless (bolp) (insert "\n"))
-    (setq beg (point))
-    (cond
-     ((and (eq type 'entry) (derived-mode-p 'org-mode))
-      (org-capture-verify-tree (org-capture-get :template))
-      (org-paste-subtree nil template t))
-     ((and (memq type '(item checkitem))
-	   (derived-mode-p 'org-mode)
-	   (save-excursion (skip-chars-backward " \t\n")
-			   (setq pp (point))
-			   (org-in-item-p)))
-      (goto-char pp)
-      (org-insert-item)
-      (skip-chars-backward " ")
-      (skip-chars-backward "-+*0123456789).")
-      (delete-region (point) (point-at-eol))
-      (setq beg (point))
-      (org-remove-indentation template)
-      (insert template)
-      (org-capture-empty-lines-after)
-      (goto-char beg)
-      (org-list-repair)
-      (org-end-of-item))
-     (t
-      (insert template)
-      (org-capture-empty-lines-after)
-      (skip-chars-forward " \t\n")
-      (unless (eobp) (beginning-of-line))))
-    (setq end (point))
-    (goto-char beg)
-    (when (re-search-forward "%\\?" end t)
-      (replace-match ""))))
+;; (defun org-drill-insert-card ()
+;;   "Insert the capture template at point."
+;;   (let* ((template (org-capture-get :template))
+;; 	       (type  'entry)
+;; 	 beg end pp)
+;;    (unless (bolp) (insert "\n"))
+;;     (setq beg (point))
+;;     (cond
+;;      ((and (eq type 'entry) (derived-mode-p 'org-mode))
+;;       (org-capture-verify-tree (org-capture-get :template))
+;;       (org-paste-subtree nil template t))
+;;      ((and (memq type '(item checkitem))
+;; 	   (derived-mode-p 'org-mode)
+;; 	   (save-excursion (skip-chars-backward " \t\n")
+;; 			   (setq pp (point))
+;; 			   (org-in-item-p)))
+;;       (goto-char pp)
+;;       (org-insert-item)
+;;       (skip-chars-backward " ")
+;;       (skip-chars-backward "-+*0123456789).")
+;;       (delete-region (point) (point-at-eol))
+;;       (setq beg (point))
+;;       (org-remove-indentation template)
+;;       (insert template)
+;;       (org-capture-empty-lines-after)
+;;       (goto-char beg)
+;;       (org-list-repair)
+;;       (org-end-of-item))
+;;      (t
+;;       (insert template)
+;;       (org-capture-empty-lines-after)
+;;       (skip-chars-forward " \t\n")
+;;       (unless (eobp) (beginning-of-line))))
+;;     (setq end (point))
+;;     (goto-char beg)
+;;     (when (re-search-forward "%\\?" end t)
+;;       (replace-match ""))))
 
-(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "s-=")
-                                                   (lambda () (interactive) (org-drill-insert-card)))))
+;; (add-hook 'org-mode-hook (lambda () (local-set-key (kbd "s-=")
+;;                                                    (lambda () (interactive) (org-drill-insert-card)))))
 #+END_SRC
 
 
@@ -1079,6 +1080,7 @@ disable for now because it screws up some indentation for regular js
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :ensure t
+  :pin melpa-stable
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -1094,16 +1096,16 @@ disable for now because it screws up some indentation for regular js
 #+BEGIN_SRC emacs-lisp
 (use-package polymode
   :ensure t
-  :pin melpa)
+  :pin melpa-stable)
 
-(use-package poly-R
-  :ensure t
-  :pin melpa
-  )
+;; (use-package poly-R
+;;   :ensure t
+;;   :pin melpa-stable
+;;   )
 
 (use-package poly-markdown
   :ensure t
-  :pin melpa
+  :pin melpa-stable
   )
 
 #+END_SRC
@@ -1503,28 +1505,29 @@ replace: \,(upcase \1)
 (set-face-background 'error "#cb4b16")
 (set-face-foreground 'error "#ffffff")
 
+;; TODO: fix this to new solarized package 2025. also maybe switch to straight.el
 ;; HT https://github.com/bbatsov/solarized-emacs/pull/198
-(solarized-with-color-variables 'light
-  (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
-  (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
-  (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
-  (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
-  (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
-  (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
-  (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
-  (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
-)
+;; (solarized-with-color-variables 'light
+;;   (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
+;;   (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
+;;   (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
+;;   (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
+;;   (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
+;;   (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
+;;   (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
+;;   (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
+;; )
 
-(solarized-with-color-variables 'dark
-  (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
-  (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
-  (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
-  (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
-  (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
-  (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
-  (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
-  (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
-)
+;; (solarized-with-color-variables 'dark
+;;   (set-face-attribute 'org-level-1 nil :foreground `,blue :slant 'italic)
+;;   (set-face-attribute 'org-level-2 nil :foreground `,magenta :slant 'italic)
+;;   (set-face-attribute 'org-level-3 nil :foreground `,yellow :slant 'italic)
+;;   (set-face-attribute 'org-level-4 nil :foreground `,cyan :slant 'italic)
+;;   (set-face-attribute 'org-level-5 nil :foreground `,base01 :slant 'italic)
+;;   (set-face-attribute 'org-level-6 nil :foreground `,orange :slant 'italic)
+;;   (set-face-attribute 'org-level-7 nil :foreground `,violet :slant 'italic)
+;;   (set-face-attribute 'org-level-8 nil :foreground `,green :slant 'italic)
+;; )
 #+END_SRC
 
 * test1
@@ -1568,7 +1571,7 @@ HT
 http://stackoverflow.com/a/5762495/351392
 http://oremacs.com/2015/02/24/emacs-speed-test/
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :tangle no
 emacs -Q -l profile-dotemacs.el \
     --eval "(setq profile-dotemacs-file \
         (setq load-file-name \"init.el\"))" \
