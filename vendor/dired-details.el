@@ -126,16 +126,21 @@ Changing this variable will not affect existing dired buffers."
 hidden), 'shown (details are visible).")
 (make-variable-buffer-local 'dired-details-state)
 
+(defun dired-details--before-dired-revert (&rest _ignored)
+  "Remove cached detail overlays before reverting a Dired buffer."
+  (dired-details-delete-overlays))
+
 (defun dired-details-install ()
-  (eval-after-load "dired"
-    '(progn
-       (add-hook 'dired-after-readin-hook 'dired-details-activate)
+  (with-eval-after-load 'dired
+    (add-hook 'dired-after-readin-hook #'dired-details-activate)
 
-       (define-key dired-mode-map "(" 'dired-details-hide)
-       (define-key dired-mode-map ")" 'dired-details-show)
+    (define-key dired-mode-map "(" #'dired-details-hide)
+    (define-key dired-mode-map ")" #'dired-details-show)
 
-       (defadvice dired-revert (before remember-the-details activate)
-         (dired-details-delete-overlays)))))
+    (unless (advice-member-p #'dired-details--before-dired-revert
+                             'dired-revert)
+      (advice-add 'dired-revert :before
+                  #'dired-details--before-dired-revert))))
 
 (defun dired-details-activate ()
   "Set up dired-details in the current dired buffer. Called by
@@ -223,10 +228,10 @@ hidden in this buffer."
           (cond ((ignore-errors (dired-move-to-filename t))
                  (make-overlay (+ 2 bol) (point)))
                 ((and dired-details-hide-extra-lines
-                      (let ((line (buffer-substring (point-at-bol) (point-at-eol))))
+                      (let ((line (buffer-substring (line-beginning-position) (line-end-position))))
                         (when (delq nil (mapcar (lambda (x) (string-match x line))
                                                 dired-details-invisible-lines))
-                          (let ((o (make-overlay bol (1+ (point-at-eol)))))
+                          (let ((o (make-overlay bol (1+ (line-end-position)))))
                             ;;this is delayed so that the hide-link bit below doesn't bork
                             (overlay-put o 'make-intangible t)
                             (overlay-put o 'suppress-before t)

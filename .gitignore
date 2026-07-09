@@ -1,8 +1,21 @@
+# macOS metadata
 .DS_Store
+
+# Generated configuration and Emacs runtime state
 init.el
-elpa/*
-auto-save-list/*
-emacs.el
-url
-vimish-fold
+auto-save-list/
+eln-cache/
+bookmarks
+history
+network-security.data
+tramp
+transient/
+url/
+vimish-fold/
 projectile*
+
+# Installed packages
+elpa/
+
+# Legacy generated configuration
+emacs.el

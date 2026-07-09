@@ -711,7 +711,7 @@ If such a comment exists, delete the comment (including all leading
   and whose cdr is the point of the comment's initial semicolon,
   relative to the start of the line."
   (save-excursion
-    (paredit-skip-whitespace t (point-at-eol))
+    (paredit-skip-whitespace t (line-end-position))
     (and (eq ?\; (char-after))
          (not (eq ?\; (char-after (1+ (point)))))
          (not (or (paredit-in-string-p)
@@ -719,10 +719,10 @@ If such a comment exists, delete the comment (including all leading
          (let* ((start                  ;Move to before the semicolon.
                  (progn (backward-char) (point)))
                 (comment
-                 (buffer-substring start (point-at-eol))))
-           (paredit-skip-whitespace nil (point-at-bol))
-           (delete-region (point) (point-at-eol))
-           (cons comment (- start (point-at-bol)))))))
+                 (buffer-substring start (line-end-position))))
+           (paredit-skip-whitespace nil (line-beginning-position))
+           (delete-region (point) (line-end-position))
+           (cons comment (- start (line-beginning-position)))))))
 
 (defun paredit-insert-pair (n open close forward)
   (let* ((regionp
@@ -984,7 +984,7 @@ If in a comment and if followed by invalid structure, call
   (cond ((paredit-in-string-p)
          (newline))
         ((paredit-in-comment-p)
-         (if (paredit-region-ok-p (point) (point-at-eol))
+         (if (paredit-region-ok-p (point) (line-end-position))
              (progn (newline-and-indent) (indent-sexp))
              (indent-new-comment-line)))
         (t
@@ -1033,7 +1033,7 @@ If a list begins on the line after the point but ends on a different
 
 (defun paredit-semicolon-find-line-break-point ()
   (let ((line-break-point nil)
-        (eol (point-at-eol)))
+        (eol (line-end-position)))
     (and (save-excursion
            (paredit-handle-sexp-errors
                (progn
@@ -1041,14 +1041,14 @@ If a list begins on the line after the point but ends on a different
                      (progn
                        (setq line-break-point (point))
                        (forward-sexp)
-                       (and (eq eol (point-at-eol))
+                       (and (eq eol (line-end-position))
                             (not (eobp)))))
                  (backward-sexp)
-                 (eq eol (point-at-eol)))
+                 (eq eol (line-end-position)))
              ;; If we hit the end of an expression, but the closing
              ;; delimiter is on another line, don't break the line.
              (save-excursion
-               (paredit-skip-whitespace t (point-at-eol))
+               (paredit-skip-whitespace t (line-end-position))
                (not (or (eolp) (eq (char-after) ?\; ))))))
          line-break-point)))
 
@@ -1131,7 +1131,7 @@ This is expected to be called only in `paredit-comment-dwim'; do not
       ;; COMMENT-P to true; if not, it will be nil.
       (while (progn
                (setq comment-p          ;t -> no error
-                     (comment-search-forward (point-at-eol) t))
+                     (comment-search-forward (line-end-position) t))
                (and comment-p
                     (or (paredit-in-string-p)
                         (paredit-in-char-p (1- (point))))))
@@ -1140,10 +1140,10 @@ This is expected to be called only in `paredit-comment-dwim'; do not
 
 (defun paredit-insert-comment ()
   (let ((code-after-p
-         (save-excursion (paredit-skip-whitespace t (point-at-eol))
+         (save-excursion (paredit-skip-whitespace t (line-end-position))
                          (not (eolp))))
         (code-before-p
-         (save-excursion (paredit-skip-whitespace nil (point-at-bol))
+         (save-excursion (paredit-skip-whitespace nil (line-beginning-position))
                          (not (bolp)))))
     (cond ((and (bolp)
                 (let ((indent
@@ -1330,7 +1330,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
          (paredit-kill-line-in-string))
         ((paredit-in-comment-p)
          (kill-line))
-        ((save-excursion (paredit-skip-whitespace t (point-at-eol))
+        ((save-excursion (paredit-skip-whitespace t (line-end-position))
                          (or (eolp) (eq (char-after) ?\; )))
          ;** Be careful about trailing backslashes.
          (if (paredit-in-char-p)
@@ -1339,7 +1339,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
         (t (paredit-kill-sexps-on-line))))
 
 (defun paredit-kill-line-in-string ()
-  (if (save-excursion (paredit-skip-whitespace t (point-at-eol))
+  (if (save-excursion (paredit-skip-whitespace t (line-end-position))
                       (eolp))
       (kill-line)
     (save-excursion
@@ -1347,14 +1347,14 @@ With a numeric prefix argument N, do `kill-line' that many times."
       (if (paredit-in-string-escape-p)
           (backward-char))
       (kill-region (point)
-                   (min (point-at-eol)
+                   (min (line-end-position)
                         (cdr (paredit-string-start+end-points)))))))
 
 (defun paredit-kill-sexps-on-line ()
   (if (paredit-in-char-p)               ; Move past the \ and prefix.
       (backward-char 2))                ; (# in Scheme/CL, ? in elisp)
   (let ((beginning (point))
-        (eol (point-at-eol)))
+        (eol (line-end-position)))
     (let ((end-of-list-p (paredit-forward-sexps-to-kill beginning eol)))
       ;; If we got to the end of the list and it's on the same line,
       ;; move backward past the closing delimiter before killing.  (This
@@ -1370,7 +1370,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
                      ;; the last S-expression we found.  Be sure,
                      ;; though, not to kill any closing parentheses.
                      (if (and (not end-of-list-p)
-                              (eq (point-at-eol) eol))
+                              (eq (line-end-position) eol))
                          eol
                          (point)))))))
 
@@ -1395,7 +1395,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
         (save-excursion
           (paredit-handle-sexp-errors (forward-sexp)
             (up-list)
-            (setq end-of-list-p (eq (point-at-eol) eol))
+            (setq end-of-list-p (eq (line-end-position) eol))
             (throw 'return nil))
           (if (or (and (not firstp)
                        (not kill-whole-line)
@@ -1403,7 +1403,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
                   (paredit-handle-sexp-errors
                       (progn (backward-sexp) nil)
                     t)
-                  (not (eq (point-at-eol) eol)))
+                  (not (eq (line-end-position) eol)))
               (throw 'return nil)))
         (forward-sexp)
         (if (and firstp
@@ -1421,8 +1421,8 @@ With a numeric prefix argument N, do `kill-line' that many times."
                           (point)))
                    ;; ...or just use the point past the newline, if
                    ;; we encounter a comment.
-                   (point-at-eol)))
-  (cond ((save-excursion (paredit-skip-whitespace nil (point-at-bol))
+                   (line-end-position)))
+  (cond ((save-excursion (paredit-skip-whitespace nil (line-beginning-position))
                          (bolp))
          ;; Nothing but indentation before the point, so indent it.
          (lisp-indent-line))
@@ -1543,14 +1543,14 @@ With a numeric prefix argument N, do `kill-line' that many times."
   (cond ((paredit-in-string-p)
          (paredit-copy-as-kill-in-string))
         ((paredit-in-comment-p)
-         (copy-region-as-kill (point) (point-at-eol)))
-        ((save-excursion (paredit-skip-whitespace t (point-at-eol))
+         (copy-region-as-kill (point) (line-end-position)))
+        ((save-excursion (paredit-skip-whitespace t (line-end-position))
                          (or (eolp) (eq (char-after) ?\; )))
          ;** Be careful about trailing backslashes.
          (save-excursion
            (if (paredit-in-char-p)
                (backward-char))
-           (copy-region-as-kill (point) (point-at-eol))))
+           (copy-region-as-kill (point) (line-end-position))))
         (t (paredit-copy-sexps-as-kill))))
 
 (defun paredit-copy-as-kill-in-string ()
@@ -1558,7 +1558,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
     (if (paredit-in-string-escape-p)
         (backward-char))
     (copy-region-as-kill (point)
-                         (min (point-at-eol)
+                         (min (line-end-position)
                               (cdr (paredit-string-start+end-points))))))
 
 (defun paredit-copy-sexps-as-kill ()
@@ -1566,7 +1566,7 @@ With a numeric prefix argument N, do `kill-line' that many times."
     (if (paredit-in-char-p)
         (backward-char 2))
     (let ((beginning (point))
-          (eol (point-at-eol)))
+          (eol (line-end-position)))
       (let ((end-of-list-p (paredit-forward-sexps-to-kill beginning eol)))
         (if end-of-list-p (progn (up-list) (backward-char)))
         (copy-region-as-kill beginning
@@ -1575,9 +1575,9 @@ With a numeric prefix argument N, do `kill-line' that many times."
                                           (paredit-skip-whitespace t)
                                           (and (not (eq (char-after) ?\; ))
                                                (point)))
-                                        (point-at-eol)))
+                                        (line-end-position)))
                                    ((and (not end-of-list-p)
-                                         (eq (point-at-eol) eol))
+                                         (eq (line-end-position) eol))
                                     eol)
                                    (t
                                     (point))))))))
