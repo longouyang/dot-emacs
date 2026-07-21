@@ -544,6 +544,51 @@ for solarized colors to look right in terminal
 ;;(add-to-list 'custom-theme-load-path "~/.emacs.d/vendor/solarized")
 ;;(load-theme 'solarized-light t)
 
+(defun my/macos-dark-appearance-p ()
+  "Return non-nil when macOS is currently using dark Appearance."
+  (and (eq system-type 'darwin)
+       (with-temp-buffer
+         (and (eq 0
+                  (call-process "/usr/bin/defaults" nil t nil
+                                "read" "-g" "AppleInterfaceStyle"))
+              (string-match-p "\\`Dark[[:space:]]*\\'"
+                              (buffer-string))))))
+
+(defun my/solarized-theme-for-system-appearance ()
+  "Return the Solarized theme matching the current system Appearance."
+  ;; Preserve the old dark default on non-macOS systems.
+  (if (and (eq system-type 'darwin)
+           (not (my/macos-dark-appearance-p)))
+      'solarized-light
+    'solarized-dark))
+
+(defun my/sync-solarized-theme-with-system-appearance ()
+  "Switch Solarized themes when macOS Appearance changes."
+  (interactive)
+  (when (and (eq system-type 'darwin)
+             (featurep 'solarized-theme))
+    (let ((theme (my/solarized-theme-for-system-appearance)))
+      (unless (equal custom-enabled-themes (list theme))
+        (condition-case err
+            (load-theme theme t)
+          (error
+           (message "Could not sync Solarized with macOS Appearance: %s"
+                    (error-message-string err))))))))
+
+(defvar my/macos-theme-sync-timer nil
+  "Timer used to periodically sync Solarized with macOS Appearance.")
+
+(defun my/start-macos-theme-sync ()
+  "Start Solarized synchronization with macOS Appearance."
+  (my/sync-solarized-theme-with-system-appearance)
+  (when (timerp my/macos-theme-sync-timer)
+    (cancel-timer my/macos-theme-sync-timer))
+  ;; Focus changes sync immediately; this catches changes while Emacs remains
+  ;; focused without polling more often than every five minutes.
+  (setq my/macos-theme-sync-timer
+        (run-at-time 300 300
+                     #'my/sync-solarized-theme-with-system-appearance)))
+
 (use-package solarized-theme
   :ensure t
   :pin melpa
@@ -557,7 +602,10 @@ for solarized colors to look right in terminal
         solarized-scale-org-headlines nil
         )
   :config
-  (load-theme 'solarized-dark t))
+  (load-theme (my/solarized-theme-for-system-appearance) t)
+  (add-hook 'after-init-hook #'my/start-macos-theme-sync)
+  (add-hook 'focus-in-hook
+            #'my/sync-solarized-theme-with-system-appearance))
 #+END_SRC
 
 ** Use SF Mono font
@@ -647,6 +695,148 @@ Org Drill is installed as its own package; Org itself comes from Emacs 30.
 
 ;; indent subtrees by default
 (setq org-startup-indented t)
+
+;; Start previously unseen Org files in overview mode (top-level headings
+;; only).  For files visited before, restore their exact folding regions.
+(setq org-startup-folded 'fold)
+
+(defvar my/org-fold-state-file
+  (expand-file-name "org-fold-state.el" user-emacs-directory)
+  "File used to persist Org folding regions between visits.")
+
+(defvar my/org-fold-state-data nil
+  "Alist mapping local Org file names to saved folding state.")
+
+(defvar my/org-fold-state-loaded nil
+  "Non-nil after `my/org-fold-state-data' has been loaded from disk.")
+
+(defvar-local my/org-fold-state-content-hash nil
+  "Hash of the current Org buffer before its latest unsaved edit.")
+
+(defun my/org-fold-state-load ()
+  "Load persisted Org folding state once, without evaluating its contents."
+  (unless my/org-fold-state-loaded
+    (setq my/org-fold-state-loaded t
+          my/org-fold-state-data nil)
+    (when (file-readable-p my/org-fold-state-file)
+      (condition-case err
+          (with-temp-buffer
+            (insert-file-contents my/org-fold-state-file)
+            (let ((read-eval nil))
+              (setq my/org-fold-state-data (read (current-buffer))))
+            (unless (listp my/org-fold-state-data)
+              (error "expected an alist")))
+        (error
+         (setq my/org-fold-state-data nil)
+         (message "Ignoring invalid Org fold state: %s"
+                  (error-message-string err)))))))
+
+(defun my/org-fold-state-write ()
+  "Write `my/org-fold-state-data' to `my/org-fold-state-file'."
+  (condition-case err
+      (let ((print-length nil)
+            (print-level nil))
+        (with-temp-file my/org-fold-state-file
+          (insert ";;; Machine-local Org folding state; generated automatically.\n")
+          (prin1 my/org-fold-state-data (current-buffer))
+          (insert "\n")))
+    (error
+     (message "Could not save Org fold state: %s"
+              (error-message-string err)))))
+
+(defun my/org-fold-state-key ()
+  "Return a stable persistence key for the current local file."
+  (when (and buffer-file-name
+             (not (file-remote-p buffer-file-name)))
+    (file-truename buffer-file-name)))
+
+(defun my/org-fold-state-hash ()
+  "Return a hash of all text in the current buffer."
+  (save-restriction
+    (widen)
+    (secure-hash 'sha256 (current-buffer))))
+
+(defun my/org-fold-state-invalidate-hash (&rest _)
+  "Forget the cached content hash after a text edit."
+  (setq my/org-fold-state-content-hash nil))
+
+(defun my/org-fold-state-regions-valid-p (regions)
+  "Return non-nil when REGIONS can safely be restored in this buffer."
+  (and
+   (listp regions)
+   (catch 'invalid
+     (dolist (region regions t)
+       (pcase region
+         (`(,beg ,end ,spec)
+          (unless (and (integerp beg)
+                       (integerp end)
+                       (<= (point-min) beg end (point-max))
+                       (symbolp spec))
+            (throw 'invalid nil)))
+         (_ (throw 'invalid nil)))))))
+
+(defun my/org-fold-state-capture ()
+  "Capture this unmodified local Org buffer's current folding state.
+Return non-nil when state was captured."
+  (let ((key (my/org-fold-state-key)))
+    (when (and key
+               (derived-mode-p 'org-mode)
+               (not (buffer-modified-p)))
+      (require 'org-fold)
+      (my/org-fold-state-load)
+      (setq my/org-fold-state-content-hash
+            (or my/org-fold-state-content-hash
+                (my/org-fold-state-hash)))
+      (let ((entry
+             (list :hash my/org-fold-state-content-hash
+                   :regions (org-fold-get-regions))))
+        (setq my/org-fold-state-data
+              (cons (cons key entry)
+                    (assoc-delete-all key my/org-fold-state-data))))
+      t)))
+
+(defun my/org-fold-state-save (&rest _)
+  "Capture and persist the current Org buffer's folding state."
+  (when (my/org-fold-state-capture)
+    (my/org-fold-state-write)))
+
+(defun my/org-fold-state-restore ()
+  "Restore folding state for the current Org file when its text matches."
+  (let ((key (my/org-fold-state-key)))
+    (when key
+      (require 'org-fold)
+      (my/org-fold-state-load)
+      (setq my/org-fold-state-content-hash (my/org-fold-state-hash))
+      (let* ((entry (cdr (assoc key my/org-fold-state-data)))
+             (regions (and entry (plist-get entry :regions))))
+        (when (and entry
+                   (plist-member entry :regions)
+                   (equal my/org-fold-state-content-hash
+                          (plist-get entry :hash))
+                   (my/org-fold-state-regions-valid-p regions))
+          ;; Copy because `org-fold-regions' may destructively filter its input.
+          (org-fold-regions (copy-tree regions) :override t))))))
+
+(defun my/org-fold-state-enable ()
+  "Enable per-file Org folding persistence in the current buffer."
+  (my/org-fold-state-restore)
+  (add-hook 'after-change-functions
+            #'my/org-fold-state-invalidate-hash nil t)
+  (add-hook 'after-save-hook #'my/org-fold-state-save nil t)
+  (add-hook 'kill-buffer-hook #'my/org-fold-state-save nil t))
+
+(defun my/org-fold-state-save-all ()
+  "Capture all unmodified local Org buffers and persist them together."
+  (let (captured)
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (my/org-fold-state-capture)
+          (setq captured t))))
+    (when captured
+      (my/org-fold-state-write))))
+
+(add-hook 'org-mode-hook #'my/org-fold-state-enable)
+(add-hook 'kill-emacs-hook #'my/org-fold-state-save-all)
 
 ;; src indentation
 ;; HT http://stackoverflow.com/questions/9764583/strange-indentation-within-emacs-org-mode-src-block

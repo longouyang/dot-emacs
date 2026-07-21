@@ -8,6 +8,7 @@ eln-cache/
 bookmarks
 history
 network-security.data
+org-fold-state.el
 tramp
 transient/
 url/
